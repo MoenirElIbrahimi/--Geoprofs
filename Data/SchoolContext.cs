@@ -10,6 +10,9 @@ namespace ContosoUniversity.Data
         {
         }
 
+        public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<Leaverequest> Leaverequests { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -19,6 +22,12 @@ namespace ContosoUniversity.Data
             modelBuilder.Entity<Course>().ToTable("Course");
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
             modelBuilder.Entity<Student>().ToTable("Student");
+            modelBuilder.Entity<Leaverequest>().ToTable("Leaverequest");
+            modelBuilder.Entity<Employee>().ToTable("Employee");
         }
+
+        public DbSet<ContosoUniversity.Models.Leaverequest> Leaverequest { get; set; }
+
+        public DbSet<ContosoUniversity.Models.Employee> Employee { get; set; }
     }
 }

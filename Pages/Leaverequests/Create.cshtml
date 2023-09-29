@@ -1,0 +1,54 @@
+﻿@page
+@model ContosoUniversity.Pages.Leaverequests.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Leaverequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.Reason" class="control-label"></label>
+                <input asp-for="Leaverequest.Reason" class="form-control" />
+                <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.Status" class="control-label"></label>
+                <input asp-for="Leaverequest.Status" class="form-control" />
+                <span asp-validation-for="Leaverequest.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.StartDate" class="control-label"></label>
+                <input asp-for="Leaverequest.StartDate" class="form-control" />
+                <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.EndDate" class="control-label"></label>
+                <input asp-for="Leaverequest.EndDate" class="form-control" />
+                <span asp-validation-for="Leaverequest.EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.EnrollmentDate" class="control-label"></label>
+                <input asp-for="Leaverequest.EnrollmentDate" class="form-control" />
+                <span asp-validation-for="Leaverequest.EnrollmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
