@@ -24,6 +24,26 @@
                 <span asp-validation-for="Employee.FirstMidName" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Employee.Email" class="control-label"></label>
+                <input asp-for="Employee.Email" class="form-control" />
+                <span asp-validation-for="Employee.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Password" class="control-label"></label>
+                <input asp-for="Employee.Password" class="form-control" />
+                <span asp-validation-for="Employee.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Team" class="control-label"></label>
+                <input asp-for="Employee.Team" class="form-control" />
+                <span asp-validation-for="Employee.Team" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employee.Role" class="control-label"></label>
+                <input type="number" asp-for="Employee.Role" class="form-control" />
+                <span asp-validation-for="Employee.Role" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
