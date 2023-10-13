@@ -11,8 +11,6 @@
 
         public DateTime EndDate { get; set; }
 
-        public DateTime EnrollmentDate { get; set; }
-
         public Employee Employee { get; set; }
     }
 }

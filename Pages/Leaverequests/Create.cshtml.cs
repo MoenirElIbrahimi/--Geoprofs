@@ -21,6 +21,12 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public IActionResult OnGet()
         {
+            string userRole = HttpContext.Session.GetString("UserRole");
+
+            if (!(userRole == "manager" || userRole == "werknemer"))
+            {
+                Response.Redirect("/");
+            }
             return Page();
         }
 
@@ -36,8 +42,22 @@ namespace ContosoUniversity.Pages.Leaverequests
                 return Page();
             }
 
+            if (Leaverequest.StartDate > Leaverequest.EndDate)
+            {
+                ModelState.AddModelError(string.Empty, "Start date must be earlier than the end date.");
+                return Page();
+            }
+
+            // Set the "Status" to 1
+            Leaverequest.Status = 1;
+
+            // Associate with the "Employee" with ID 1
+            Leaverequest.Employee = _context.Employees.Find(1);
+
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Leave request submitted";
 
             return RedirectToPage("./Index");
         }

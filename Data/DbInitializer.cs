@@ -1,4 +1,5 @@
 ﻿using ContosoUniversity.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ContosoUniversity.Data
 {
@@ -25,6 +26,21 @@ namespace ContosoUniversity.Data
             };
 
             context.Students.AddRange(students);
+            context.SaveChanges();
+
+            // Look for any students.
+            if (context.Employees.Any())
+            {
+                return;   // DB has been seeded
+            }
+
+            var employees = new Employee[]
+            {
+                new Employee{FirstMidName="Manager",LastName="Manager",Email="manager@geoprofs.com",Password="manager",Team="A1",Role=2},
+                new Employee{FirstMidName="Werknemer",LastName="Werknemer",Email="Werknemer@geoprofs.com",Password="Werknemer",Team="A1",Role=1},
+            };
+
+            context.Employees.AddRange(employees);
             context.SaveChanges();
 
             var courses = new Course[]

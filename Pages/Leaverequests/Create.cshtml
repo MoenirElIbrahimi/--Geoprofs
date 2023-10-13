@@ -9,34 +9,26 @@
 
 <h4>Leaverequest</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div>
+    <div>
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Leaverequest.Reason" class="control-label"></label>
-                <input asp-for="Leaverequest.Reason" class="form-control" />
+                <textarea asp-for="Leaverequest.Reason" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Leaverequest.Status" class="control-label"></label>
-                <input asp-for="Leaverequest.Status" class="form-control" />
-                <span asp-validation-for="Leaverequest.Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Leaverequest.StartDate" class="control-label"></label>
-                <input asp-for="Leaverequest.StartDate" class="form-control" />
-                <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Leaverequest.EndDate" class="control-label"></label>
-                <input asp-for="Leaverequest.EndDate" class="form-control" />
-                <span asp-validation-for="Leaverequest.EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Leaverequest.EnrollmentDate" class="control-label"></label>
-                <input asp-for="Leaverequest.EnrollmentDate" class="form-control" />
-                <span asp-validation-for="Leaverequest.EnrollmentDate" class="text-danger"></span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Leaverequest.StartDate" class="control-label"></label>
+                    <input asp-for="Leaverequest.StartDate" class="form-control" />
+                    <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Leaverequest.EndDate" class="control-label"></label>
+                    <input asp-for="Leaverequest.EndDate" class="form-control" />
+                    <span asp-validation-for="Leaverequest.EndDate" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
