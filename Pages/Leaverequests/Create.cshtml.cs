@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversity.Pages.Leaverequests
 {
@@ -19,15 +21,23 @@ namespace ContosoUniversity.Pages.Leaverequests
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task OnGetAsync()
         {
-            string userRole = HttpContext.Session.GetString("UserRole");
+            // Get the userId from the session
+            var userId = HttpContext.Session.GetInt32("UserId") ?? default;
 
-            if (!(userRole == "manager" || userRole == "werknemer"))
+
+
+            // Check the role of the user in the database
+            var user = await _context.Employee.FirstOrDefaultAsync(u => u.ID == userId);
+
+
+
+            if (!(user != null && (user.Role == 1 || user.Role == 2)))
             {
+                // Redirect to the Privacy page
                 Response.Redirect("/");
             }
-            return Page();
         }
 
         [BindProperty]
