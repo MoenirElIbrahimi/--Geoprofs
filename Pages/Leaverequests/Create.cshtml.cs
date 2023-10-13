@@ -21,6 +21,12 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public IActionResult OnGet()
         {
+            string userRole = HttpContext.Session.GetString("UserRole");
+
+            if (!(userRole == "manager" || userRole == "werknemer"))
+            {
+                Response.Redirect("/");
+            }
             return Page();
         }
 
