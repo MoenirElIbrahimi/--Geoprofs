@@ -14,14 +14,7 @@
         int totalHours = 0;
         foreach (var leaverequest in leaverequests)
         {
-
-            if (leaverequest.Status != null) // Check for null and status 'Accepted'
-            {
-                Console.WriteLine($"Status: {leaverequest.Status.Name}"); // Log the status name
-                                                                          // rest of your code
-            }
-
-            if (leaverequest.Status != null) // Check for null and status 'Accepted'
+            if (leaverequest.Status != null)
             {
                 TimeSpan timeSpan = leaverequest.EndDate - leaverequest.StartDate;
                 int leaveHours = (int)timeSpan.TotalHours;
