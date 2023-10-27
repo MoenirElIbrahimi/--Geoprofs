@@ -10,16 +10,22 @@ using ContosoUniversity.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace ContosoUniversity.Pages.Leaverequests
 {
     public class CreateModel : PageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
+
+
         public CreateModel(ContosoUniversity.Data.SchoolContext context)
         {
             _context = context;
         }
+
+
 
         public async Task OnGetAsync()
         {
@@ -28,29 +34,39 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
+
             // Check the role of the user in the database
             var user = await _context.Employee.FirstOrDefaultAsync(u => u.ID == userId);
 
 
 
-            if (!(user != null && (user.Role == 1 || user.Role == 2)))
+
+            var firstRole = await _context.Roles.FirstOrDefaultAsync();
+            if (!(user != null && (user.Role == firstRole)))
             {
                 // Redirect to the Privacy page
                 Response.Redirect("/");
             }
         }
 
+
+
         [BindProperty]
         public Leaverequest Leaverequest { get; set; }
-        
+
+
+
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
+
+
 
             if (Leaverequest.StartDate > Leaverequest.EndDate)
             {
@@ -58,16 +74,27 @@ namespace ContosoUniversity.Pages.Leaverequests
                 return Page();
             }
 
+
+
             // Set the "Status" to 1
-            Leaverequest.Status = 1;
+            var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
+            Leaverequest.Status = firstStatus;
+
+
 
             // Associate with the "Employee" with ID 1
             Leaverequest.Employee = _context.Employees.Find(1);
 
+
+
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
 
+
+
             TempData["SuccessMessage"] = "Leave request submitted";
+
+
 
             return RedirectToPage("./Index");
         }

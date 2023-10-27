@@ -13,7 +13,7 @@
         public DateTime StartDate { get; set; }
         public Role Role { get; set; }
 
-        public Manager Manager { get; set; }
+        public Employee Manager { get; set; }
 
         public int VacationDays { get; set; }
 
