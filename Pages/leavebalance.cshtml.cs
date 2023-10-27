@@ -20,13 +20,13 @@ namespace ContosoUniversity.Pages
         }
 
         public Employee Employee { get; set; }
+        public List<Leaverequest> Leaverequests { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
 
             if (_context.Employees == null)
             {
-
                 return NotFound();
             }
 
@@ -35,7 +35,8 @@ namespace ContosoUniversity.Pages
             if (id == null)
             {
                 var userId = HttpContext.Session.GetInt32("UserId");
-                if (userId == null) {
+                if (userId == null)
+                {
                     return NotFound();
                 }
 
@@ -54,6 +55,11 @@ namespace ContosoUniversity.Pages
                 else
                 {
                     Employee = employee;
+                    // Fetch the leave requests associated with the employee
+                    Leaverequests = await _context.Leaverequests
+                                        .Include(lr => lr.Status) // Include the Status entity
+                                        .Where(lr => lr.Employee.ID == employee.ID && lr.Status.Name == "Accepted") // Filter by the 'Accepted' status
+                                        .ToListAsync();
                 }
                 return Page();
 
@@ -64,9 +70,14 @@ namespace ContosoUniversity.Pages
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Employee = employee;
+                // Fetch the leave requests associated with the employee
+                Leaverequests = await _context.Leaverequests
+                                        .Include(lr => lr.Status) // Include the Status entity
+                                        .Where(lr => lr.Employee.ID == employee.ID && lr.Status.Name == "Accepted") // Filter by the 'Accepted' status
+                                        .ToListAsync();
             }
             return Page();
         }

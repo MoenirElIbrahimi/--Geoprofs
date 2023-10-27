@@ -33,7 +33,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             var userId = HttpContext.Session.GetInt32("UserId") ?? default;
 
 
-
+            userId = 1;
 
 
             // Check the role of the user in the database

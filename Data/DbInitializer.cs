@@ -116,6 +116,47 @@ namespace ContosoUniversity.Data
             employees[3].Manager = employees[2];
             employees[4].Manager = employees[0];
             context.SaveChanges();
+
+            var categories = new Category[]
+            {
+                new Category{Name="Vakantie"},
+                new Category{Name="Persoonlijk"},
+                new Category{Name="Ziek"},
+            };
+
+            context.Categorys.AddRange(categories);
+            context.SaveChanges();
+
+            var statuses = new Status[]
+            {
+                new Status{Name="Requested"},
+                new Status{Name="In Progress"},
+                new Status{Name="Accepted"},
+                new Status{Name="Denied"},
+            };
+
+            context.Statuses.AddRange(statuses);
+            context.SaveChanges();
+
+            // Seed leave requests
+            foreach (var employee in employees)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    var leaveRequest = new Leaverequest
+                    {
+                        Reason = "Vacation",
+                        StartDate = DateTime.Now,
+                        EndDate = DateTime.Now.AddHours(1),
+                        Status = statuses[i % 4],
+                        Employee = employee,
+                        Type = categories[i % 3]
+                    };
+                    context.Leaverequests.Add(leaveRequest);
+                }
+            }
+
+            context.SaveChanges();
         }
     }
 }

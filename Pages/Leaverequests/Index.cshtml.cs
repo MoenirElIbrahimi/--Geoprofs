@@ -37,6 +37,7 @@ namespace ContosoUniversity.Pages.Leaverequests
         {
             // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("UserId") ?? default;
+
             if (_context.Leaverequest != null)    
             {        
                 Leaverequest = await _context.Leaverequest             

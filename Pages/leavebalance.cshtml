@@ -1,45 +1,66 @@
 ﻿@page
 @model ContosoUniversity.Pages.leavebalanceModel
+@using ContosoUniversity.Models;
+
 
 @{
     ViewData["Title"] = "leavebalance";
 }
 
+@functions {
+    // This function calculates the total hours spent on leave for the employee
+    public int CalculateUsedLeaveHours(List<Leaverequest> leaverequests)
+    {
+        int totalHours = 0;
+        foreach (var leaverequest in leaverequests)
+        {
+
+            if (leaverequest.Status != null) // Check for null and status 'Accepted'
+            {
+                Console.WriteLine($"Status: {leaverequest.Status.Name}"); // Log the status name
+                                                                          // rest of your code
+            }
+
+            if (leaverequest.Status != null) // Check for null and status 'Accepted'
+            {
+                TimeSpan timeSpan = leaverequest.EndDate - leaverequest.StartDate;
+                int leaveHours = (int)timeSpan.TotalHours;
+
+                // If the leave spans multiple days, restrict the hours to a maximum of 8 per day
+                if (timeSpan.Days > 1)
+                {
+                    leaveHours = Math.Min(8 * timeSpan.Days, leaveHours);
+                }
+
+                totalHours += leaveHours;
+            }
+        }
+        return totalHours;
+    }
+
+}
+
 <h1>leavebalance</h1>
 
-<div>
-    <h4>Employee</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Employee.LastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Employee.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee.Bsn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Employee.Bsn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Employee.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee.VacationDays)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Employee.VacationDays)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Verlofsaldo totaal</h5>
+                <p class="card-text">@Html.DisplayFor(model => model.Employee.VacationDays)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Besteed verlof</h5>
+                @{
+                    // Calculate the used leave hours for the employee
+                    int usedLeaveHours = CalculateUsedLeaveHours(Model.Leaverequests);
+                }
+                <p class="card-text">@usedLeaveHours</p>
+            </div>
+        </div>
+    </div>
 </div>
