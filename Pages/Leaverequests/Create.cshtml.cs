@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 
 
+
+
 namespace ContosoUniversity.Pages.Leaverequests
 {
     public class CreateModel : PageModel
@@ -20,10 +22,14 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
+
         public CreateModel(ContosoUniversity.Data.SchoolContext context)
         {
             _context = context;
         }
+
+
 
 
 
@@ -35,9 +41,15 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+            userId = 1;
+
+
+
 
             // Check the role of the user in the database
             var user = await _context.Employee.FirstOrDefaultAsync(u => u.ID == userId);
+
+
 
 
 
@@ -52,8 +64,12 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
+
         [BindProperty]
         public Leaverequest Leaverequest { get; set; }
+
+
 
 
 
@@ -68,11 +84,15 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
+
             if (Leaverequest.StartDate > Leaverequest.EndDate)
             {
                 ModelState.AddModelError(string.Empty, "Start date must be earlier than the end date.");
                 return Page();
             }
+
+
 
 
 
@@ -82,8 +102,12 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
+
             // Associate with the "Employee" with ID 1
             Leaverequest.Employee = _context.Employees.Find(1);
+
+
 
 
 
@@ -92,7 +116,11 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
+
             TempData["SuccessMessage"] = "Leave request submitted";
+
+
 
 
 

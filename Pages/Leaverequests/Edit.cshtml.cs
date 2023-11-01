@@ -23,6 +23,7 @@ namespace ContosoUniversity.Pages.Leaverequests
         [BindProperty]
         public Leaverequest Leaverequest { get; set; } = default!;
 
+        public IList<Status> Status { get; set; }
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null || _context.Leaverequest == null)
@@ -30,14 +31,32 @@ namespace ContosoUniversity.Pages.Leaverequests
                 return NotFound();
             }
 
-            var leaverequest =  await _context.Leaverequest.FirstOrDefaultAsync(m => m.ID == id);
+            var leaverequest = await _context.Leaverequest.FirstOrDefaultAsync(m => m.ID == id);
             if (leaverequest == null)
             {
                 return NotFound();
             }
+
             Leaverequest = leaverequest;
+
+            if (id == null || _context.Statuses == null)
+            {
+                return NotFound();
+            }
+
+            // Retrieve the status collection from the database
+            Status = await _context.Statuses.ToListAsync();
+
+            if (Status == null)
+            {
+                return NotFound();
+            }
+
             return Page();
         }
+
+
+
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.

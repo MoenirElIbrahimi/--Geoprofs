@@ -30,7 +30,7 @@ namespace ContosoUniversity.Data
             modelBuilder.Entity<Leaverequest>().ToTable("Leaverequest");
             modelBuilder.Entity<Employee>().ToTable("Employee");
             modelBuilder.Entity<Role>().ToTable("Roles");
-            modelBuilder.Entity<Team>().ToTable("Teams");
+            modelBuilder.Entity<Team>().ToTable("Teams");   
             modelBuilder.Entity<Status>().ToTable("statuses");
             modelBuilder.Entity<Category>().ToTable("Categorys");
             modelBuilder.Entity<User>().ToTable("Users");

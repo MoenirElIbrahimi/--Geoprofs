@@ -20,11 +20,6 @@
                 <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Leaverequest.Status" class="control-label"></label>
-                <input asp-for="Leaverequest.Status" class="form-control" />
-                <span asp-validation-for="Leaverequest.Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Leaverequest.StartDate" class="control-label"></label>
                 <input asp-for="Leaverequest.StartDate" class="form-control" />
                 <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
@@ -34,10 +29,22 @@
                 <input asp-for="Leaverequest.EndDate" class="form-control" />
                 <span asp-validation-for="Leaverequest.EndDate" class="text-danger"></span>
             </div>
+                        <div class="form-group">
+        <label>Status:</label>
+
+                       @foreach (var item in Model.Status)
+        {
+            <input asp-for="Leaverequest.Status" type="radio" name="status" value="@item.ID" />
+            <label>@item.Name</label>
+
+        }
+    </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
         </form>
+
     </div>
 </div>
 
