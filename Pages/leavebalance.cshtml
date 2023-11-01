@@ -8,27 +8,26 @@
 }
 
 @functions {
-    // This function calculates the total hours spent on leave for the employee
-    public int CalculateUsedLeaveHours(List<Leaverequest> leaverequests)
-    {
-        int totalHours = 0;
-        foreach (var leaverequest in leaverequests)
+    @functions {
+        // This function calculates the total days spent on leave for the employee
+        public int CalculateUsedLeaveDays(List<Leaverequest> leaverequests)
         {
-            if (leaverequest.Status != null)
+            int totalDays = 0;
+            if (leaverequests != null)
             {
-                TimeSpan timeSpan = leaverequest.EndDate - leaverequest.StartDate;
-                int leaveHours = (int)timeSpan.TotalHours;
-
-                // If the leave spans multiple days, restrict the hours to a maximum of 8 per day
-                if (timeSpan.Days > 1)
+                foreach (var leaverequest in leaverequests)
                 {
-                    leaveHours = Math.Min(8 * timeSpan.Days, leaveHours);
-                }
+                    if (leaverequest != null && leaverequest.Status != null && leaverequest.StartDate != null && leaverequest.EndDate != null)
+                    {
+                        TimeSpan timeSpan = leaverequest.EndDate - leaverequest.StartDate;
+                        int leaveDays = (int)timeSpan.TotalDays;
 
-                totalHours += leaveHours;
+                        totalDays += leaveDays;
+                    }
+                }
             }
+            return totalDays;
         }
-        return totalHours;
     }
 
 }
@@ -50,7 +49,7 @@
                 <h5 class="card-title">Besteed verlof</h5>
                 @{
                     // Calculate the used leave hours for the employee
-                    int usedLeaveHours = CalculateUsedLeaveHours(Model.Leaverequests);
+                    int usedLeaveHours = CalculateUsedLeaveDays(Model.Leaverequests);
                 }
                 <p class="card-text">@usedLeaveHours</p>
             </div>
