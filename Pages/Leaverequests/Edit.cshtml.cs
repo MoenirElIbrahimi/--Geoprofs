@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ContosoUniversity.Pages.Leaverequests
 {
@@ -23,43 +23,31 @@ namespace ContosoUniversity.Pages.Leaverequests
         [BindProperty]
         public Leaverequest Leaverequest { get; set; } = default!;
 
-        public IList<Status> Status { get; set; }
+        public List<SelectListItem> StatusItems { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Leaverequest == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var leaverequest = await _context.Leaverequest.FirstOrDefaultAsync(m => m.ID == id);
-            if (leaverequest == null)
+            Leaverequest = await _context.Leaverequest
+                .Include(lr => lr.Status)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (Leaverequest == null)
             {
                 return NotFound();
             }
 
-            Leaverequest = leaverequest;
-
-            if (id == null || _context.Statuses == null)
-            {
-                return NotFound();
-            }
-
-            // Retrieve the status collection from the database
-            Status = await _context.Statuses.ToListAsync();
-
-            if (Status == null)
-            {
-                return NotFound();
-            }
+            StatusItems = _context.Statuses
+                .Select(s => new SelectListItem { Value = s.ID.ToString(), Text = s.Name })
+                .ToList();
 
             return Page();
         }
 
-
-
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -90,7 +78,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         private bool LeaverequestExists(int id)
         {
-          return _context.Leaverequest.Any(e => e.ID == id);
+            return _context.Leaverequest.Any(e => e.ID == id);
         }
     }
 }
