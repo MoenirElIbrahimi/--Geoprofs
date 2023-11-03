@@ -26,33 +26,60 @@ namespace ContosoUniversity.Pages
         {
             Employee employee;
 
+            // Get userID from session
+            var userId = HttpContext.Session.GetInt32("UserID");
+
+            // If there is no userID, the user needs to log in
+            if (userId == null)
+            {
+                return RedirectToPage("/Index");
+            }
+
+            // If no ID parameter it should use the userID from session to get leavebalans
             if (id == null)
             {
-                var userId = HttpContext.Session.GetInt32("UserID");
-                if (userId == null)
-                {
-                    return NotFound();
-                }
-
+                // Get user with id from session
                 var user = await _context.Users
-                    .Include(u => u.Employee) // Include the Employee data
+                    .Include(u => u.Employee)
                     .FirstOrDefaultAsync(m => m.ID == userId);
 
+                // If there is no user/employee with that session ID, user doesnt have permission
                 if (user == null || user.Employee == null)
                 {
-                    return NotFound();
+                    return RedirectToPage("/403");
                 }
 
                 employee = user.Employee;
             }
             else
             {
-                employee = await _context.Employees
-                    .FirstOrDefaultAsync(m => m.ID == id);
+                // Get user from session
+                var currentUser = await _context.Users
+                .Include(u => u.Employee)
+                .ThenInclude(e => e.Role)
+                .Where(u => u.ID == userId)
+                .FirstOrDefaultAsync();
 
+                // Check if user exists
+                if (currentUser != null && currentUser.Employee != null)
+                {
+                    // Checck if user has permission
+                    if (currentUser.Employee.Role.Name != "Manager")
+                    {
+                        return RedirectToPage("/403");
+                    }
+                }
+
+                // Get employee where user ID = parameter ID
+                employee = await _context.Users
+                    .Where(u => u.ID == id)
+                    .Select(u => u.Employee)
+                    .FirstOrDefaultAsync();
+
+                // If there is no employee with that ID redirect to 404
                 if (employee == null)
                 {
-                    return NotFound();
+                    return RedirectToPage("/404");
                 }
             }
 
