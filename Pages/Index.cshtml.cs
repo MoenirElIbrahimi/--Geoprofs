@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ContosoUniversity.Models;
 using ContosoUniversity.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversity.Pages
 {
@@ -44,7 +45,7 @@ namespace ContosoUniversity.Pages
 
 
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             // Je kunt de databasecontext hier gebruiken zonder deze expliciet in de methode te passen.
             var email = Email;
@@ -56,18 +57,16 @@ namespace ContosoUniversity.Pages
             if (user != null)
             {
                 // De inloggegevens zijn geldig. Sla de gebruikersinformatie op in de sessie.
-                HttpContext.Session.SetInt32("UserID", user.ID);
+                var employee = await _context.Employees
+                    .FirstOrDefaultAsync(e => e.ID == user.ID);
                 HttpContext.Session.SetString(key: "loggedin", value: "yes");
 
                 // Redirect naar de leaverequests-pagina of een andere beveiligde pagina.
                 return RedirectToPage("/leaverequests/index");
             }
-            else
-            {
-                // Ongeldige inloggegevens
-                ModelState.AddModelError(string.Empty, "Ongeldige gebruikersnaam of wachtwoord.");
-                return Page();
-            }
+            // Ongeldige inloggegevens
+            ModelState.AddModelError(string.Empty, "Ongeldige gebruikersnaam of wachtwoord.");
+            return Page();
         }
 
 
