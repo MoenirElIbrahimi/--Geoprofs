@@ -60,6 +60,7 @@ namespace ContosoUniversity.Pages
                 var employee = await _context.Employees
                     .FirstOrDefaultAsync(e => e.ID == user.ID);
                 HttpContext.Session.SetString(key: "loggedin", value: "yes");
+                HttpContext.Session.SetInt32("userID", employee.ID);
 
                 // Redirect naar de leaverequests-pagina of een andere beveiligde pagina.
                 return RedirectToPage("/leaverequests/index");
