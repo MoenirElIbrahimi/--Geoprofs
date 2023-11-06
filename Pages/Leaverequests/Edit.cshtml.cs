@@ -25,19 +25,49 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public List<SelectListItem> StatusItems { get; set; }
 
+        public Employee CurrentUser { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            // If parameter id is not set return not found
             if (id == null)
             {
                 return NotFound();
             }
 
+            // Get leaverequest from id parameter
             Leaverequest = await _context.Leaverequest
                 .Include(lr => lr.Status)
+                .Include(lr => lr.Employee)
+                .ThenInclude(e => e.Team)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+            // Return not found if there are no leaverequests with that id
             if (Leaverequest == null)
             {
+                return NotFound();
+            }
+
+            // Get the userId from the session
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            CurrentUser = await _context.Employees
+                .Where(u => u.ID == userId)
+                .Include(e => e.Role)
+                .Include(e => e.Team)
+                .FirstOrDefaultAsync();
+            if (CurrentUser == null || CurrentUser.Role == null || CurrentUser.Team == null)
+            {
+                return RedirectToPage("/leaverequests/index");
+            } else if (CurrentUser.Role.Name != "Manager") {
+                return RedirectToPage("/leaverequests/index");
+            } else if (CurrentUser.ID == Leaverequest.Employee.ID)
+            {
+                return RedirectToPage("/leaverequests/index");
+            } else if (CurrentUser.Team.ID != Leaverequest.Employee.Team.ID) {
                 return NotFound();
             }
 
