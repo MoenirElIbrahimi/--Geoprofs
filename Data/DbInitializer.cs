@@ -43,12 +43,8 @@ namespace ContosoUniversity.Data
                 new Course{CourseID=2042,Title="Literature",Credits=4}
             };
 
-
-
             context.Courses.AddRange(courses);
             context.SaveChanges();
-
-
 
             var enrollments = new Enrollment[]
             {
@@ -65,8 +61,6 @@ namespace ContosoUniversity.Data
                 new Enrollment{StudentID=6,CourseID=1045},
                 new Enrollment{StudentID=7,CourseID=3141,Grade=Grade.A},
             };
-
-
 
             context.Enrollments.AddRange(enrollments);
             context.SaveChanges();
@@ -120,8 +114,7 @@ namespace ContosoUniversity.Data
           
             context.Users.AddRange(users);
             context.SaveChanges();
-
-
+          
             // Assign manager to employee
             employees[1].Manager = employees[0];
             employees[3].Manager = employees[2];
@@ -148,8 +141,7 @@ namespace ContosoUniversity.Data
           
             context.Statuses.AddRange(statuses);
             context.SaveChanges();
-
-
+          
             // Seed leave requests
             foreach (var employee in employees)
             {

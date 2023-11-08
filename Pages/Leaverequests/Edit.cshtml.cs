@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ContosoUniversity.Pages.Leaverequests
 {
@@ -23,24 +23,61 @@ namespace ContosoUniversity.Pages.Leaverequests
         [BindProperty]
         public Leaverequest Leaverequest { get; set; } = default!;
 
+        public List<SelectListItem> StatusItems { get; set; }
+
+        public Employee CurrentUser { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Leaverequest == null)
+            // If parameter id is not set return not found
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var leaverequest =  await _context.Leaverequest.FirstOrDefaultAsync(m => m.ID == id);
-            if (leaverequest == null)
+            // Get leaverequest from id parameter
+            Leaverequest = await _context.Leaverequest
+                .Include(lr => lr.Status)
+                .Include(lr => lr.Employee)
+                .ThenInclude(e => e.Team)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            // Return not found if there are no leaverequests with that id
+            if (Leaverequest == null)
             {
                 return NotFound();
             }
-            Leaverequest = leaverequest;
+
+            // Get the userId from the session
+            var userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            CurrentUser = await _context.Employees
+                .Where(u => u.ID == userId)
+                .Include(e => e.Role)
+                .Include(e => e.Team)
+                .FirstOrDefaultAsync();
+            if (CurrentUser == null || CurrentUser.Role == null || CurrentUser.Team == null)
+            {
+                return RedirectToPage("/leaverequests/index");
+            } else if (CurrentUser.Role.Name != "Manager") {
+                return RedirectToPage("/leaverequests/index");
+            } else if (CurrentUser.ID == Leaverequest.Employee.ID)
+            {
+                return RedirectToPage("/leaverequests/index");
+            } else if (CurrentUser.Team.ID != Leaverequest.Employee.Team.ID) {
+                return NotFound();
+            }
+
+            StatusItems = _context.Statuses
+                .Select(s => new SelectListItem { Value = s.ID.ToString(), Text = s.Name })
+                .ToList();
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -71,7 +108,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         private bool LeaverequestExists(int id)
         {
-          return _context.Leaverequest.Any(e => e.ID == id);
+            return _context.Leaverequest.Any(e => e.ID == id);
         }
     }
 }
