@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-
-
+using ContosoUniversity.Models;
+using ContosoUniversity.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversity.Pages
 {
     public class IndexModel : PageModel
     {
+
         private readonly ILogger<IndexModel> _logger;
+        private readonly SchoolContext _context;
 
-
-
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, ContosoUniversity.Data.SchoolContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
 
@@ -31,52 +32,44 @@ namespace ContosoUniversity.Pages
 
         public void OnGet()
         {
-            string userRole = HttpContext.Session.GetString("UserRole");
+            string isloggedin = HttpContext.Session.GetString("loggedin");
 
 
 
-            if (userRole == "manager" || userRole == "werknemer")
+            if (isloggedin == "yes")
             {
                 // Redirect to the leaverequests page
-                Response.Redirect("/leaverequests");
+                Response.Redirect("/leaverequests/index");
             }
         }
 
 
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            // Hardcoded login credentials
-            string managerEmail = "manager@geoprofs.com";
-            string managerPassword = "manager";
-            string werknemerEmail = "werknemer@geoprofs.com";
-            string werknemerPassword = "werknemer";
+            // Je kunt de databasecontext hier gebruiken zonder deze expliciet in de methode te passen.
+            var email = Email;
+            var password = Password;
 
+            // Voer de inlogcontrole uit
+            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
 
-
-            if ((Email == managerEmail && Password == managerPassword) || (Email == werknemerEmail && Password == werknemerPassword))
+            if (user != null)
             {
-                // Passwords match, you can log in the employee here
-                if (Email == managerEmail)
-                {
-                    HttpContext.Session.SetInt32("UserID", 1);
-                }
-                else if (Email == werknemerEmail)
-                {
-                    HttpContext.Session.SetInt32("UserID", 2);
-                }
+                // De inloggegevens zijn geldig. Sla de gebruikersinformatie op in de sessie.
+                var employee = await _context.Employees
+                    .FirstOrDefaultAsync(e => e.ID == user.ID);
+                HttpContext.Session.SetString(key: "loggedin", value: "yes");
+                HttpContext.Session.SetInt32("userID", employee.ID);
 
-
-
-                // Redirect to the leaverequests page
+                // Redirect naar de leaverequests-pagina of een andere beveiligde pagina.
                 return RedirectToPage("/leaverequests/index");
             }
-            else
-            {
-                // Invalid email or password
-                ModelState.AddModelError(string.Empty, "Invalid email or password.");
-                return Page();
-            }
+            // Ongeldige inloggegevens
+            ModelState.AddModelError(string.Empty, "Ongeldige gebruikersnaam of wachtwoord.");
+            return Page();
         }
+
+
     }
 }

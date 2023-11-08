@@ -5,13 +5,14 @@
 
 @{
     ViewData["Title"] = "Index";
-}
-
+}    
 <h1>Index</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<p><a asp-page="/Logout">Uitloggen</a></p>
 
 @if (TempData.ContainsKey("SuccessMessage"))
 {
@@ -66,6 +67,7 @@
     ViewData["Title"] = "Index";
 }
 
+ @if (Model.UserRole.Name == "Manager"){
 <h1>Index</h1>
 
 <p>
@@ -121,3 +123,4 @@
 }
     </tbody>
 </table>
+}
