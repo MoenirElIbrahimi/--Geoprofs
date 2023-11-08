@@ -122,12 +122,3 @@
 }
     </tbody>
 </table>
-<script>
-    // Controleer of "userID" in de sessie bestaat
-    var userID = @HttpContext.Session.GetInt32("userID");
-
-    if (userID !== null) {
-        // "userID" bestaat in de sessie, toon een alertvenster
-        alert("Je bent ingelogd met userID: " + userID);
-    }
-</script>
