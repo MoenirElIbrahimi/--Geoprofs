@@ -5,8 +5,7 @@
 
 @{
     ViewData["Title"] = "Index";
-}
-
+}    
 <h1>Index</h1>
 
 <p>
@@ -68,6 +67,7 @@
     ViewData["Title"] = "Index";
 }
 
+ @if (Model.UserRole.Name == "Manager"){
 <h1>Index</h1>
 
 <p>
@@ -122,3 +122,4 @@
 }
     </tbody>
 </table>
+}

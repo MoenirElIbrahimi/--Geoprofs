@@ -28,12 +28,10 @@ namespace ContosoUniversity.Data
                 new Student{FirstMidName="Laura",LastName="Norman",EnrollmentDate=DateTime.Parse("2018-09-01")},
                 new Student{FirstMidName="Nino",LastName="Olivetto",EnrollmentDate=DateTime.Parse("2019-09-01")}
             };
-
-
-
+          
             context.Students.AddRange(students);
             context.SaveChanges();
-
+          
             var courses = new Course[]
             {
                 new Course{CourseID=1050,Title="Chemistry",Credits=3},
@@ -82,6 +80,8 @@ namespace ContosoUniversity.Data
             context.Teams.AddRange(teams);
             context.SaveChanges();
 
+
+
             var roles = new Role[]
             {
                 new Role{Name="Manager"},
@@ -121,6 +121,7 @@ namespace ContosoUniversity.Data
             context.Users.AddRange(users);
             context.SaveChanges();
 
+
             // Assign manager to employee
             employees[1].Manager = employees[0];
             employees[3].Manager = employees[2];
@@ -147,6 +148,7 @@ namespace ContosoUniversity.Data
           
             context.Statuses.AddRange(statuses);
             context.SaveChanges();
+
 
             // Seed leave requests
             foreach (var employee in employees)

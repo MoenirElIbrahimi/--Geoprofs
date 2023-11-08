@@ -31,7 +31,7 @@ namespace ContosoUniversity.Pages.Leaverequests
         {
             // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("UserId") ?? default;
-
+            
 
             userId = 1;
 
@@ -44,8 +44,10 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
+
             var firstRole = await _context.Roles.FirstOrDefaultAsync();
             if (!(user != null && (user.Role == firstRole)))
+
             {
                 // Redirect to the Privacy page
                 Response.Redirect("/");
@@ -81,8 +83,6 @@ namespace ContosoUniversity.Pages.Leaverequests
             // Set the "Status" to 1
             var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
             Leaverequest.Status = firstStatus;
-
-
 
             // Associate with the "Employee" with ID 1
             Leaverequest.Employee = _context.Employees.Find(1);
