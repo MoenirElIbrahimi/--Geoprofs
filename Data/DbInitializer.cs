@@ -1,6 +1,8 @@
 ﻿using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Identity;
 
+
+
 namespace ContosoUniversity.Data
 {
     public static class DbInitializer
@@ -12,6 +14,8 @@ namespace ContosoUniversity.Data
             {
                 return;   // DB has been seeded
             }
+
+
 
             var students = new Student[]
             {
@@ -25,9 +29,10 @@ namespace ContosoUniversity.Data
                 new Student{FirstMidName="Nino",LastName="Olivetto",EnrollmentDate=DateTime.Parse("2019-09-01")}
             };
 
+
+
             context.Students.AddRange(students);
             context.SaveChanges();
-
 
 
             var courses = new Course[]
@@ -41,8 +46,12 @@ namespace ContosoUniversity.Data
                 new Course{CourseID=2042,Title="Literature",Credits=4}
             };
 
+
+
             context.Courses.AddRange(courses);
             context.SaveChanges();
+
+
 
             var enrollments = new Enrollment[]
             {
@@ -60,6 +69,8 @@ namespace ContosoUniversity.Data
                 new Enrollment{StudentID=7,CourseID=3141,Grade=Grade.A},
             };
 
+
+
             context.Enrollments.AddRange(enrollments);
             context.SaveChanges();
 
@@ -69,8 +80,13 @@ namespace ContosoUniversity.Data
                 new Team{Name="TeamB"},
             };
 
+
+
+
             context.Teams.AddRange(teams);
             context.SaveChanges();
+
+
 
             var roles = new Role[]
             {
@@ -78,14 +94,17 @@ namespace ContosoUniversity.Data
                 new Role{Name="Employee"},
             };
 
+
             context.Roles.AddRange(roles);
             context.SaveChanges();
+
 
             // Seed Employees and Users
             if (context.Employees.Any())
             {
                 return;   // DB has been seeded
             }
+
 
             var employees = new Employee[]
             {
@@ -95,6 +114,7 @@ namespace ContosoUniversity.Data
                 new Employee{FirstName="Werknemer2",LastName="Werknemer2", Role=roles[1], Team=teams[0],StartDate=DateTime.Parse("2020-01-01"),VacationDays=10},
                 new Employee{FirstName="Werknemer3",LastName="Werknemer3", Role=roles[1], Team=teams[1],StartDate=DateTime.Parse("2020-01-01"),VacationDays=15},
             };
+
 
             context.Employees.AddRange(employees);
             context.SaveChanges();
@@ -108,14 +128,17 @@ namespace ContosoUniversity.Data
                 new User{Employee=employees[4], Email="werknemer3@geoprofs.com", Password="werknemer3"},
             };
 
+
             context.Users.AddRange(users);
             context.SaveChanges();
+
 
             // Assign manager to employee
             employees[1].Manager = employees[0];
             employees[3].Manager = employees[2];
             employees[4].Manager = employees[0];
             context.SaveChanges();
+
 
             var categories = new Category[]
             {
@@ -124,8 +147,10 @@ namespace ContosoUniversity.Data
                 new Category{Name="Ziek"},
             };
 
+
             context.Categorys.AddRange(categories);
             context.SaveChanges();
+
 
             var statuses = new Status[]
             {
@@ -137,6 +162,7 @@ namespace ContosoUniversity.Data
 
             context.Statuses.AddRange(statuses);
             context.SaveChanges();
+
 
             // Seed leave requests
             foreach (var employee in employees)
