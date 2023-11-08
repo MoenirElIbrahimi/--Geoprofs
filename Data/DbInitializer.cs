@@ -34,10 +34,6 @@ namespace ContosoUniversity.Data
             context.Students.AddRange(students);
             context.SaveChanges();
 
-
-
-
-
             var courses = new Course[]
             {
                 new Course{CourseID=1050,Title="Chemistry",Credits=3},
@@ -76,43 +72,31 @@ namespace ContosoUniversity.Data
 
             context.Enrollments.AddRange(enrollments);
             context.SaveChanges();
-
-
-
+          
             var teams = new Team[]
             {
                 new Team{Name="TeamA"},
                 new Team{Name="TeamB"},
             };
-
-
-
+          
             context.Teams.AddRange(teams);
             context.SaveChanges();
-
-
 
             var roles = new Role[]
             {
                 new Role{Name="Manager"},
                 new Role{Name="Employee"},
             };
-
-
-
+          
             context.Roles.AddRange(roles);
             context.SaveChanges();
-
-
-
+          
             // Seed Employees and Users
             if (context.Employees.Any())
             {
                 return;   // DB has been seeded
             }
-
-
-
+          
             var employees = new Employee[]
             {
                 new Employee{FirstName="Manager",LastName="Manager", Role=roles[0], Team=teams[0],StartDate=DateTime.Parse("2020-01-01"),VacationDays=20},
@@ -121,14 +105,10 @@ namespace ContosoUniversity.Data
                 new Employee{FirstName="Werknemer2",LastName="Werknemer2", Role=roles[1], Team=teams[0],StartDate=DateTime.Parse("2020-01-01"),VacationDays=10},
                 new Employee{FirstName="Werknemer3",LastName="Werknemer3", Role=roles[1], Team=teams[1],StartDate=DateTime.Parse("2020-01-01"),VacationDays=15},
             };
-
-
-
+          
             context.Employees.AddRange(employees);
             context.SaveChanges();
-
-
-
+          
             var users = new User[]
             {
                 new User{Employee=employees[0], Email="manager@geoprofs.com", Password="manager"},
@@ -137,36 +117,26 @@ namespace ContosoUniversity.Data
                 new User{Employee=employees[3], Email="werknemer2@geoprofs.com", Password="werknemer2"},
                 new User{Employee=employees[4], Email="werknemer3@geoprofs.com", Password="werknemer3"},
             };
-
-
-
+          
             context.Users.AddRange(users);
             context.SaveChanges();
-
-
 
             // Assign manager to employee
             employees[1].Manager = employees[0];
             employees[3].Manager = employees[2];
             employees[4].Manager = employees[0];
             context.SaveChanges();
-
-
-
+          
             var categories = new Category[]
             {
                 new Category{Name="Vakantie"},
                 new Category{Name="Persoonlijk"},
                 new Category{Name="Ziek"},
             };
-
-
-
+          
             context.Categorys.AddRange(categories);
             context.SaveChanges();
-
-
-
+          
             var statuses = new Status[]
             {
                 new Status{Name="Requested"},
@@ -174,13 +144,9 @@ namespace ContosoUniversity.Data
                 new Status{Name="Accepted"},
                 new Status{Name="Denied"},
             };
-
-
-
+          
             context.Statuses.AddRange(statuses);
             context.SaveChanges();
-
-
 
             // Seed leave requests
             foreach (var employee in employees)
@@ -199,9 +165,7 @@ namespace ContosoUniversity.Data
                     context.Leaverequests.Add(leaveRequest);
                 }
             }
-
-
-
+          
             context.SaveChanges();
         }
     }

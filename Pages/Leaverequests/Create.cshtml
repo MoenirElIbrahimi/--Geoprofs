@@ -20,13 +20,13 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label asp-for="Leaverequest.StartDate" class="control-label"></label>
-                    <input asp-for="Leaverequest.StartDate" class="form-control" />
+                    <label asp-for="Leaverequest.StartDate" class="control-label">start of leave</label>
+                    <input type="date" asp-for="Leaverequest.StartDate" class="form-control" />
                     <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="Leaverequest.EndDate" class="control-label"></label>
-                    <input asp-for="Leaverequest.EndDate" class="form-control" />
+                    <label asp-for="Leaverequest.EndDate" class="control-label">End of leave</label>
+                    <input type="date" asp-for="Leaverequest.EndDate" class="form-control" />
                     <span asp-validation-for="Leaverequest.EndDate" class="text-danger"></span>
                 </div>
             </div>
