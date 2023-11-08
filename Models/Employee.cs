@@ -4,14 +4,18 @@
     {
         public int ID { get; set; }
         public string LastName { get; set; }
-        public string FirstMidName { get; set; }
+        public string FirstName { get; set; }
 
-        public string Email { get; set; }
+        public int Bsn { get; set; }
 
-        public string Password { get; set; }
+        public Team Team { get; set; }
 
-        public string Team { get; set; }
+        public DateTime StartDate { get; set; }
+        public Role Role { get; set; }
 
-        public int Role { get; set; }
+        public Employee Manager { get; set; }
+
+        public int VacationDays { get; set; }
+
     }
 }
