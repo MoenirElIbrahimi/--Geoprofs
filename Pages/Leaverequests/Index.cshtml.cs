@@ -38,11 +38,13 @@ namespace ContosoUniversity.Pages.Leaverequests
         public async Task OnGetAsync()
         {
             // Get the userId from the session
+
             var userId = HttpContext.Session.GetInt32("UserID") ?? default;
             UserRole = await _context.Employees
                     .Where(u => u.ID == userId)
                     .Select(u => u.Role)
                     .FirstOrDefaultAsync();
+
             if (_context.Leaverequest != null)    
             {        
                 Leaverequest = await _context.Leaverequest             

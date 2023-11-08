@@ -35,9 +35,6 @@ namespace ContosoUniversity.Data
             context.SaveChanges();
 
 
-
-
-
             var courses = new Course[]
             {
                 new Course{CourseID=1050,Title="Chemistry",Credits=3},
@@ -77,13 +74,12 @@ namespace ContosoUniversity.Data
             context.Enrollments.AddRange(enrollments);
             context.SaveChanges();
 
-
-
             var teams = new Team[]
             {
                 new Team{Name="TeamA"},
                 new Team{Name="TeamB"},
             };
+
 
 
 
@@ -99,10 +95,8 @@ namespace ContosoUniversity.Data
             };
 
 
-
             context.Roles.AddRange(roles);
             context.SaveChanges();
-
 
 
             // Seed Employees and Users
@@ -110,7 +104,6 @@ namespace ContosoUniversity.Data
             {
                 return;   // DB has been seeded
             }
-
 
 
             var employees = new Employee[]
@@ -123,11 +116,8 @@ namespace ContosoUniversity.Data
             };
 
 
-
             context.Employees.AddRange(employees);
             context.SaveChanges();
-
-
 
             var users = new User[]
             {
@@ -139,10 +129,8 @@ namespace ContosoUniversity.Data
             };
 
 
-
             context.Users.AddRange(users);
             context.SaveChanges();
-
 
 
             // Assign manager to employee
@@ -150,7 +138,6 @@ namespace ContosoUniversity.Data
             employees[3].Manager = employees[2];
             employees[4].Manager = employees[0];
             context.SaveChanges();
-
 
 
             var categories = new Category[]
@@ -161,10 +148,8 @@ namespace ContosoUniversity.Data
             };
 
 
-
             context.Categorys.AddRange(categories);
             context.SaveChanges();
-
 
 
             var statuses = new Status[]
@@ -175,11 +160,8 @@ namespace ContosoUniversity.Data
                 new Status{Name="Denied"},
             };
 
-
-
             context.Statuses.AddRange(statuses);
             context.SaveChanges();
-
 
 
             // Seed leave requests
@@ -199,8 +181,6 @@ namespace ContosoUniversity.Data
                     context.Leaverequests.Add(leaveRequest);
                 }
             }
-
-
 
             context.SaveChanges();
         }
