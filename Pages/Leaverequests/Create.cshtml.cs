@@ -36,6 +36,8 @@ namespace ContosoUniversity.Pages.Leaverequests
             userId = 1;
 
 
+
+
             // Check the role of the user in the database
             var user = await _context.Employee.FirstOrDefaultAsync(u => u.ID == userId);
 
