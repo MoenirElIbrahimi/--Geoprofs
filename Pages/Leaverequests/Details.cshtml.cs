@@ -23,6 +23,14 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            var userId = HttpContext.Session.GetInt32("userId");
+
+            // If there is no userID, the user needs to log in
+            if (userId == null)
+            {
+                return RedirectToPage("/403");
+            }
+
             if (id == null || _context.Leaverequest == null)
             {
                 return NotFound();
