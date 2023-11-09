@@ -59,11 +59,18 @@ namespace ContosoUniversity.Pages
                 // De inloggegevens zijn geldig. Sla de gebruikersinformatie op in de sessie.
                 var employee = await _context.Employees
                     .FirstOrDefaultAsync(e => e.ID == user.ID);
-                HttpContext.Session.SetString(key: "loggedin", value: "yes");
-                HttpContext.Session.SetInt32("userID", employee.ID);
+                if (employee == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Geen werknemer gekoppeld aan account.");
+                }
+                else
+                {
+                    HttpContext.Session.SetString(key: "loggedin", value: "yes");
+                    HttpContext.Session.SetInt32("userId", employee.ID);
 
-                // Redirect naar de leaverequests-pagina of een andere beveiligde pagina.
-                return RedirectToPage("/leaverequests/index");
+                    // Redirect naar de leaverequests-pagina of een andere beveiligde pagina.
+                    return RedirectToPage("/leaverequests/index");
+                }
             }
             // Ongeldige inloggegevens
             ModelState.AddModelError(string.Empty, "Ongeldige gebruikersnaam of wachtwoord.");
