@@ -24,7 +24,7 @@ namespace ContosoUniversity.Pages.Leaverequests
         public async Task<IActionResult> OnGetAsync()
         {
             // Get the userId from the session
-            var userId = HttpContext.Session.GetInt32("UserId") ?? default;
+            var userId = HttpContext.Session.GetInt32("userId") ?? default;
 
             if (userId == default)
             {
