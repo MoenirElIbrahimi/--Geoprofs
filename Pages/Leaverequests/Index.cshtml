@@ -76,10 +76,6 @@
  @if (Model.UserRole.Name == "Manager"){
 <h2>Leave requests team</h2>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-
 @if (TempData.ContainsKey("SuccessMessage"))
 {
     <div class="alert alert-success">
