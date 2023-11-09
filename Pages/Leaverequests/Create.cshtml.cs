@@ -21,22 +21,27 @@ namespace ContosoUniversity.Pages.Leaverequests
             _context = context;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("UserId") ?? default;
 
-            userId = 1;
+            if (userId == default)
+            {
+                return RedirectToPage("/403");
+            }
 
             // Check the role of the user in the database
-            var user = await _context.Employee.FirstOrDefaultAsync(u => u.ID == userId);
+            var currentUser = await _context.Employee
+                .Include(e => e.Role)
+                .FirstOrDefaultAsync(u => u.ID == userId);
 
-            var firstRole = await _context.Roles.FirstOrDefaultAsync();
-            if (!(user != null && (user.Role == firstRole)))
+            if (currentUser == null)
             {
-                // Redirect to the Privacy page
-                Response.Redirect("/");
+                return RedirectToPage("/403");
             }
+
+            return Page();
         }
 
         [BindProperty]
@@ -55,20 +60,38 @@ namespace ContosoUniversity.Pages.Leaverequests
                 ModelState.AddModelError(string.Empty, "Start date must be earlier than the end date.");
                 return Page();
             }
-            
+
+            var userId = HttpContext.Session.GetInt32("userId") ?? default;
+
+            if (userId == default)
+            {
+                return RedirectToPage("/404");
+            }
+
+            // Set user for leaverequest
+            var currentUser = await _context.Employee
+                .FirstOrDefaultAsync(u => u.ID == userId);
+
+            if (currentUser == null)
+            {
+                return RedirectToPage("/403");
+            }
+
+            Leaverequest.Employee = currentUser;
+
             // Set the "Status" to 1
             var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
             Leaverequest.Status = firstStatus;
 
-            // Associate with the "Employee" with ID 1
-            Leaverequest.Employee = _context.Employees.Find(1);
+            var firstCategory = await _context.Categorys.FirstOrDefaultAsync();
+            Leaverequest.Type = firstCategory;
             
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
             
             TempData["SuccessMessage"] = "Leave request submitted";
             
-            return RedirectToPage("./Index");
+            return RedirectToPage("/leaverequests/index");
         }
     }
 }

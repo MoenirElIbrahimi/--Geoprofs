@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
-
-
+using System.Runtime.CompilerServices;
 
 namespace ContosoUniversity.Pages.Leaverequests
 {
@@ -31,30 +30,51 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public IList<Leaverequest> LeaverequestTeam { get; set; } = default!;
 
-        public Role UserRole { get; set; } = default!;
+        public Role UserRole { get; set; }
 
 
 
         public async Task OnGetAsync()
         {
             // Get the userId from the session
+            var userId = HttpContext.Session.GetInt32("userId");
+            if (userId == default)
+            {
+                TempData["ErrorMessage"] = "User ID not found in the session.";
+                RedirectToPage("/");
+            }
 
-            var userId = HttpContext.Session.GetInt32("UserID") ?? default;
-            UserRole = await _context.Employees
-                    .Where(u => u.ID == userId)
-                    .Select(u => u.Role)
-                    .FirstOrDefaultAsync();
+            var currentUser = await _context.Employees
+                    .Include(e => e.Role)
+                    .Include(e => e.Team)
+                    .FirstOrDefaultAsync(e => e.ID == userId);
+            if (currentUser == null)
+            {
+                RedirectToPage("/403");
+            }
+
+            UserRole = currentUser.Role;
 
             if (_context.Leaverequest != null)    
             {        
                 Leaverequest = await _context.Leaverequest             
-                    .Where(lr => lr.Employee.ID == userId)             
-                    .ToListAsync();        
-                var userTeam = (await _context.Employee.FirstOrDefaultAsync(e => e.ID == userId))?.Team;         
-                LeaverequestTeam = await _context.Leaverequest             
-                    .Where(lr => lr.Employee.Team == userTeam && lr.Employee.ID != userId)             
-                    .ToListAsync();   
+                    .Where(lr => lr.Employee.ID == userId)   
+                    .Include(lr => lr.Status)
+                    .ToListAsync();
+
+                LeaverequestTeam = await _context.Leaverequest
+                    .Include(lr => lr.Employee)
+                    .ThenInclude(e => e.Team)
+                    .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID && lr.Employee.ID != userId)
+                    .Include(lr => lr.Status)
+                    .ToListAsync();
+                if (LeaverequestTeam == null)
+                {
+                    RedirectToPage("/404");
+                }
             }
+
+            
         }
     }
 }

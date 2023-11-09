@@ -24,70 +24,49 @@ namespace ContosoUniversity.Pages
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            Employee employee;
-
             // Get userID from session
-            var userId = HttpContext.Session.GetInt32("UserID");
+            var userId = HttpContext.Session.GetInt32("userId");
 
             // If there is no userID, the user needs to log in
             if (userId == null)
             {
-                return RedirectToPage("/Index");
+                return RedirectToPage("/403");
+            }
+
+            // Get user with id from session
+            var currentUser = await _context.Employees
+                .Include(e => e.Role)
+                .FirstOrDefaultAsync(m => m.ID == userId);
+
+            if (currentUser == null)
+            {
+                return RedirectToPage("/403");
             }
 
             // If no ID parameter it should use the userID from session to get leavebalans
             if (id == null)
             {
-                // Get user with id from session
-                var user = await _context.Users
-                    .Include(u => u.Employee)
-                    .FirstOrDefaultAsync(m => m.ID == userId);
-
-                // If there is no user/employee with that session ID, user doesnt have permission
-                if (user == null || user.Employee == null)
-                {
-                    return RedirectToPage("/403");
-                }
-
-                employee = user.Employee;
+                Employee = currentUser;
             }
             else
             {
-                // Get user from session
-                var currentUser = await _context.Users
-                .Include(u => u.Employee)
-                .ThenInclude(e => e.Role)
-                .Where(u => u.ID == userId)
-                .FirstOrDefaultAsync();
+                Employee = await _context.Employees
+                    .FirstOrDefaultAsync(m => m.ID == id);
 
-                // Check if user exists
-                if (currentUser != null && currentUser.Employee != null)
-                {
-                    // Checck if user has permission
-                    if (currentUser.Employee.Role.Name != "Manager")
-                    {
-                        return RedirectToPage("/403");
-                    }
-                }
-
-                // Get employee where user ID = parameter ID
-                employee = await _context.Users
-                    .Where(u => u.ID == id)
-                    .Select(u => u.Employee)
-                    .FirstOrDefaultAsync();
-
-                // If there is no employee with that ID redirect to 404
-                if (employee == null)
+                if (Employee == null)
                 {
                     return RedirectToPage("/404");
                 }
+
+                if (currentUser.ID != Employee.ID && currentUser.Role.Name != "Manager") {
+                    return RedirectToPage("/403");
+                }
             }
 
-            Employee = employee;
             // Fetch the leave requests associated with the employee
             Leaverequests = await _context.Leaverequests
                 .Include(lr => lr.Status) // Include the Status entity
-                .Where(lr => lr.Employee.ID == employee.ID && lr.Status.Name == "Accepted") // Filter by the 'Accepted' status
+                .Where(lr => lr.Employee.ID == Employee.ID && lr.Status.Name == "Accepted") // Filter by the 'Accepted' status
                 .ToListAsync();
 
             return Page();

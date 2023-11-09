@@ -7,12 +7,11 @@
     ViewData["Title"] = "Index";
 }    
 <h1>Index</h1>
+<h2>Your leave requests</h2>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-
-<p><a asp-page="/Logout">Uitloggen</a></p>
 
 @if (TempData.ContainsKey("SuccessMessage"))
 {
@@ -39,13 +38,13 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.LeaverequestTeam) {
+@foreach (var item in Model.Leaverequest) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                @Html.DisplayFor(modelItem => item.Status.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
@@ -67,8 +66,15 @@
     ViewData["Title"] = "Index";
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (Model.UserRole != default) {
  @if (Model.UserRole.Name == "Manager"){
-<h1>Index</h1>
+<h2>Leave requests team</h2>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -99,13 +105,13 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Leaverequest) {
+@foreach (var item in Model.LeaverequestTeam) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
+            <td> 
+                @Html.DisplayFor(modelItem => item.Status.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
@@ -123,4 +129,5 @@
 }
     </tbody>
 </table>
+}
 }

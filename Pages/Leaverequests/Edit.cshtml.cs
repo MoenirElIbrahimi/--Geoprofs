@@ -49,7 +49,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             }
 
             // Get the userId from the session
-            var userId = HttpContext.Session.GetInt32("UserID");
+            var userId = HttpContext.Session.GetInt32("userId");
             if (userId == null)
             {
                 return NotFound();

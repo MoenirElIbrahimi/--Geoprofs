@@ -24,9 +24,16 @@
                             <a class="nav-link text-dark" asp-page="/leaverequests/index">Leave requests</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/leavebalance">Leave balance</a>
+                            <a class="nav-link text-dark" asp-page="/leavebalance">Leave balance</a>
                         </li>
                     </ul>
+                    @{
+                        string userId = Context.Session.GetString("userId");
+                    }
+                    @if (userId != default(string))
+                    {
+                        <div><a asp-page="/Logout">Uitloggen</a></div>
+                    }
                 </div>
             </div>
         </nav>
