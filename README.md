@@ -12,17 +12,17 @@ UC14:
 
 
 Overzicht leaverequests:
-Category
-status (Liefst in kleur, met legenda)
-Startdatum / Einddatum (Geen tijd)
-Van wie het is
+- Category
+- status (Liefst in kleur, met legenda)
+- Startdatum / Einddatum (Geen tijd)
+- Van wie het is
 
 Details leaverequest:
-Category
-Reden
-status
-Alle details werknemer (Team, rol, naam, etc)
-Datum aanvraag
+- Category
+- Reden
+- status
+- Alle details werknemer (Team, rol, naam, etc)
+- Datum aanvraag
 
 Ziekmelden:
 Een snelle optie om ziek te melden zou fijn zijn. Fijn om op een plek te zetten waar die niet verdwijnt. 3 voorstellen maken voor designs
