@@ -60,9 +60,10 @@
             <div class="card-body">
                 <h5 class="card-title">Verlofsaldi</h5>
                 @{
-                    // Calculate the used leave hours for the employee
-                    int availableLeaveHours = CalculateavailableLeaveDays(Model.Leaverequests);                }
-                <p class="card-text">@usedLeaveHours</p>
+                    // Calculate the available leave hours for the employee
+                    int availableLeaveHours = Model.Employee.VacationDays - usedLeaveHours;
+                }
+                <p class="card-text">@availableLeaveHours</p>
             </div>
         </div>
     </div>
