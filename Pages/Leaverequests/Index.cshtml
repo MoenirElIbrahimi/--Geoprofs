@@ -76,12 +76,7 @@
  @if (Model.UserRole.Name == "Manager"){
 <h2>Leave requests team</h2>
 
-@if (TempData.ContainsKey("SuccessMessage"))
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
+
 <table class="table">
     <thead>
         <tr>
