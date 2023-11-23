@@ -9,6 +9,17 @@
 <h1>Index</h1>
 <h2>Your leave requests</h2>
 
+@{
+    var selectedDate = ViewData["SelectedDate"] as string;
+}
+
+<form method="get">
+    <label for="selectedDate">Filter Start Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate" value="@selectedDate" />
+    <button type="submit">Filter</button>
+</form>
+
+
 <p>
     <a asp-page="Create">Create New</a>
 </p>
@@ -53,8 +64,8 @@
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
                 <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
             </td>
         </tr>
