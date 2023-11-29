@@ -17,7 +17,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
 
 
-        public IndexModel(ContosoUniversity.Data.SchoolContext context)
+        public IndexModel (ContosoUniversity.Data.SchoolContext context)
         {
             _context = context;
         }
