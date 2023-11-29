@@ -9,6 +9,7 @@ using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using static ContosoUniversity.Models.Leaverequest;
 
 namespace ContosoUniversity.Pages.Leaverequests
 {
@@ -83,8 +84,22 @@ namespace ContosoUniversity.Pages.Leaverequests
             var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
             Leaverequest.Status = firstStatus;
 
-            var firstCategory = await _context.Categorys.FirstOrDefaultAsync();
-            Leaverequest.Type = firstCategory;
+            // set leaverequest type
+
+            var leaveTypeValue = HttpContext.Request.Form["LeaveType"];
+
+            if (Enum.TryParse<LeaveType>(leaveTypeValue, out var selectedLeaveType))
+            {
+                Leaverequest.Type = selectedLeaveType;
+            }
+            else
+            {
+                ModelState.AddModelError("Leaverequest.Type", "Invalid Leave Type value");
+
+                // Keer terug naar de pagina met de foutmelding
+                return Page();
+
+            }
             
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
