@@ -123,9 +123,9 @@ namespace ContosoUniversity.Data
           
             var categories = new Category[]
             {
-                new Category{Name="Vacation"},
-                new Category{Name="Personal"},
-                new Category{Name="Sick"},
+                new Category{Name="Vakantie"},
+                new Category{Name="Persoonlijk"},
+                new Category{Name="Ziek"},
             };
           
             context.Categorys.AddRange(categories);
