@@ -19,8 +19,8 @@
 
         public enum LeaveType
         {
-            Ziek,
-            VrijeDag,
+            Requested,
+            hallo,
             vakantie,
             speciaal,
             // Voeg andere leave types toe zoals nodig

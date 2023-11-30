@@ -24,6 +24,9 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public async Task<IActionResult> OnGetAsync()
         {
+            // Laad statussen vanuit de database en wijs deze toe aan ViewData
+            ViewData["Statuses"] = await _context.Statuses.ToListAsync();
+
             // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("userId") ?? default;
 
@@ -91,14 +94,6 @@ namespace ContosoUniversity.Pages.Leaverequests
             if (Enum.TryParse<LeaveType>(leaveTypeValue, out var selectedLeaveType))
             {
                 Leaverequest.Type = selectedLeaveType;
-            }
-            else
-            {
-                ModelState.AddModelError("Leaverequest.Type", "Invalid Leave Type value");
-
-                // Keer terug naar de pagina met de foutmelding
-                return Page();
-
             }
             
             _context.Leaverequest.Add(Leaverequest);
