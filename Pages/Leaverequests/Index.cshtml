@@ -6,36 +6,7 @@
 @{
     ViewData["Title"] = "Index";
 }    
-<div class="">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1>Index</h1>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
-    </div>
-</div>
-
-<!-- Bootstrap Modal for confirmation -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to call in sick?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <form method="post">
-                    <button type="submit" class="btn btn-primary" id="confirmAction" onclick="CreateSickLeave()">Confirm</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
+<h1>Index</h1>
 <h2>Your leave requests</h2>
 
 <p>
@@ -102,58 +73,52 @@
     </div>
 }
 @if (Model.UserRole != default) {
-     @if (Model.UserRole.Name == "Manager"){
-    <h2>Leave requests team</h2>
+ @if (Model.UserRole.Name == "Manager"){
+<h2>Leave requests team</h2>
 
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.LeaverequestTeam) {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Reason)
-                        </td>
-                        <td> 
-                            @Html.DisplayFor(modelItem => item.Status.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StartDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EndDate)
-                        </td>
-                        <td>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.LeaverequestTeam) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reason)
+            </td>
+            <td> 
+                @Html.DisplayFor(modelItem => item.Status.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
 
-                            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                            <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                            <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                        </td>
-                    </tr>
-            }
-        </tbody>
-    </table>
-    }
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
 }
-
-<script>
-    function CreateSickLeave() {
-        DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
-    }
-</script>
+    </tbody>
+</table>
+}
+}
