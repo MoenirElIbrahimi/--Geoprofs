@@ -5,9 +5,31 @@
 
 @{
     ViewData["Title"] = "Index";
-}    
+}
 <h1>Index</h1>
 <h2>Your leave requests</h2>
+
+@{
+    var selectedDate = ViewData["SelectedDate"] as string;
+}
+
+<form method="get">
+    <label for="selectedDate">Filter Start Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate" value="@ViewData["SelectedDate"]" />
+
+    <label for="selectedStatus">Filter by Status:</label>
+    <select name="selectedStatus" id="selectedStatus">
+        <option value="">All</option>
+        @foreach (var status in Model.Statuses)
+        {
+            <option value="@status.Name">@status.Name</option>
+        }
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -38,27 +60,28 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Leaverequest) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Leaverequest)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reason)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -66,59 +89,89 @@
     ViewData["Title"] = "Index";
 }
 
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
-@if (Model.UserRole != default) {
- @if (Model.UserRole.Name == "Manager"){
-<h2>Leave requests team</h2>
 
+@if (Model.UserRole != default)
+{
+    @if (Model.UserRole.Name == "Manager")
+    {
+        <h2>Leave requests team</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.LeaverequestTeam) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td> 
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
+        @if (TempData.ContainsKey("SuccessMessage"))
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        <!-- Form for team's leave requests (visible only for Managers) -->
+        @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
+        {
+            <form method="get">
+                <label for="selectedDateTeam">Filter Start Date (Team):</label>
+                <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
 
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-}
+                <label for="selectedStatusTeam">Filter by Status (Team):</label>
+                <select name="selectedStatusTeam" id="selectedStatusTeam">
+                    <option value="">All</option>
+                    @foreach (var status in Model.Statuses)
+                    {
+                        <option value="@status.Name">@status.Name</option>
+                    }
+                </select>
+
+                <button type="submit">Filter (Team)</button>
+            </form>
+        }
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.LeaverequestTeam)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Reason)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndDate)
+                        </td>
+                        <td>
+
+                            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                            <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }

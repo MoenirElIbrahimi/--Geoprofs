@@ -15,39 +15,38 @@ namespace ContosoUniversity.Pages.Leaverequests
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
-
+        public IList<Status> Statuses { get; set; } = new List<Status>();
 
         public IndexModel(ContosoUniversity.Data.SchoolContext context)
         {
             _context = context;
         }
 
-
-
         public IList<Leaverequest> Leaverequest { get; set; } = default!;
-
-
 
         public IList<Leaverequest> LeaverequestTeam { get; set; } = default!;
 
         public Role UserRole { get; set; }
 
-
-
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(
+            DateTime? selectedDate,
+            string selectedStatus,
+            DateTime? selectedDateTeam,
+            string selectedStatusTeam)
         {
-            // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == default)
             {
                 TempData["ErrorMessage"] = "User ID not found in the session.";
-                RedirectToPage("/");
+                RedirectToPage("/"); // Redirect and return to avoid further execution
+                return;
             }
 
             var currentUser = await _context.Employees
-                    .Include(e => e.Role)
-                    .Include(e => e.Team)
-                    .FirstOrDefaultAsync(e => e.ID == userId);
+                .Include(e => e.Role)
+                .Include(e => e.Team)
+                .FirstOrDefaultAsync(e => e.ID == userId);
+
             if (currentUser == null)
             {
                 RedirectToPage("/403");
@@ -55,26 +54,59 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             UserRole = currentUser.Role;
 
-            if (_context.Leaverequest != null)    
-            {        
-                Leaverequest = await _context.Leaverequest             
-                    .Where(lr => lr.Employee.ID == userId)   
-                    .Include(lr => lr.Status)
-                    .ToListAsync();
-
-                LeaverequestTeam = await _context.Leaverequest
-                    .Include(lr => lr.Employee)
-                    .ThenInclude(e => e.Team)
-                    .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID && lr.Employee.ID != userId)
-                    .Include(lr => lr.Status)
-                    .ToListAsync();
-                if (LeaverequestTeam == null)
-                {
-                    RedirectToPage("/404");
-                }
+            // Filters for the current user's leave requests
+            var query = _context.Leaverequest.Where(lr => lr.Employee.ID == userId);
+            if (selectedDate.HasValue)
+            {
+                query = query.Where(lr => lr.StartDate.Date <= selectedDate.Value.Date &&
+                                          selectedDate.Value.Date < lr.EndDate.Date);
+            }
+            if (!string.IsNullOrEmpty(selectedStatus))
+            {
+                query = query.Where(lr => lr.Status.Name == selectedStatus);
             }
 
-            
+            Leaverequest = await query
+                .Include(lr => lr.Status)
+                .ToListAsync();
+
+            // Filters for the team's leave requests
+            if (UserRole.Name == "Manager")
+            {
+                query = _context.Leaverequest
+                    .Include(lr => lr.Employee)
+                    .ThenInclude(e => e.Team)
+                    .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID &&
+                                  lr.Employee.ID != userId);
+
+                if (selectedDateTeam.HasValue)
+                {
+                    query = query.Where(lr => lr.StartDate.Date <= selectedDateTeam.Value.Date &&
+                                              selectedDateTeam.Value.Date < lr.EndDate.Date);
+                }
+
+                if (!string.IsNullOrEmpty(selectedStatusTeam))
+                {
+                    query = query.Where(lr => lr.Status.Name == selectedStatusTeam);
+                }
+
+                LeaverequestTeam = await query
+                    .Include(lr => lr.Status)
+                    .ToListAsync();
+            }
+
+            ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
+            ViewData["SelectedStatus"] = selectedStatus;
+            ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
+            ViewData["SelectedStatusTeam"] = selectedStatusTeam;
+
+            Statuses = await _context.GetStatusesAsync();
+
+            if (LeaverequestTeam == null)
+            {
+                LeaverequestTeam = new List<Leaverequest>();
+            }
         }
     }
+
 }
