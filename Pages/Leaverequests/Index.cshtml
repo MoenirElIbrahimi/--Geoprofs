@@ -6,6 +6,11 @@
 @{
     ViewData["Title"] = "Index";
 }    
+<style>
+    .status-denied {
+        color: red;
+    }
+</style>
 <h1>Index</h1>
 <h2>Your leave requests</h2>
 
@@ -105,7 +110,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
-            <td> 
+            <td class=".status-denied">
                 @Html.DisplayFor(modelItem => item.Status.Name)
             </td>
             <td>
