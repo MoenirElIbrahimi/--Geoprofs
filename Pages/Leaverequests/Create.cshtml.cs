@@ -16,6 +16,7 @@ namespace ContosoUniversity.Pages.Leaverequests
     public class CreateModel : PageModel
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
+        private readonly ILogger<CreateModel> _logger;
 
         public CreateModel(ContosoUniversity.Data.SchoolContext context)
         {
@@ -25,7 +26,27 @@ namespace ContosoUniversity.Pages.Leaverequests
         public async Task<IActionResult> OnGetAsync()
         {
             // Laad statussen vanuit de database en wijs deze toe aan ViewData
-            ViewData["Statuses"] = await _context.Statuses.ToListAsync();
+            //ViewData["Statuses"] = await _context.Statuses.ToListAsync();
+
+            var statuses = await _context.Categorys.ToListAsync();
+
+            if (statuses != null && statuses.Any())
+            {
+                ViewData["Statuses"] = statuses;
+            }
+            else
+            {
+                // If the database query returns null or an empty list, provide default values
+                ViewData["Statuses"] = new List<Category>
+                {
+                    new Category { ID = 1, Name = "Vakantie" },
+                    new Category { ID = 2, Name = "Persoonlijk" },
+                    new Category { ID = 3, Name = "Ziek" },
+                };
+            }
+
+
+
 
             // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("userId") ?? default;

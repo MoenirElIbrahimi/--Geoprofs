@@ -24,7 +24,7 @@
                 <label asp-for="Leaverequest.Type" class="control-label">Leave Type</label>
                 @if (ViewData["Statuses"] != null)
                 {
-                    <select asp-for="Leaverequest.Type" asp-items="@(new SelectList(ViewData["Statuses"] as List<Status>, "Id", "Name"))" class="form-control"></select>
+                    <select asp-for="Leaverequest.Type" asp-items="@(new SelectList(ViewData["Statuses"] as List<Category>, "ID", "Name"))" class="form-control"></select>
                 }
                 else
                 {
