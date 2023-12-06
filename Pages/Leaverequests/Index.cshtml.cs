@@ -94,6 +94,53 @@ namespace ContosoUniversity.Pages.Leaverequests
                     .Include(lr => lr.Status)
                     .ToListAsync();
             }
+        }
+
+        public Leaverequest SickLeave { get; set; }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var userId = HttpContext.Session.GetInt32("userId");
+            if (userId == default)
+            {
+                TempData["ErrorMessage"] = "User ID not found in the session.";
+                return RedirectToPage("/");
+            }
+
+            var currentUser = await _context.Employee
+                .FirstOrDefaultAsync(u => u.ID == userId);
+
+            if (currentUser == null)
+            {
+                return RedirectToPage("/403");
+            }
+
+            SickLeave = new Leaverequest();
+
+            SickLeave.Employee = currentUser;
+
+            var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
+            SickLeave.Status = firstStatus;
+
+            var sickCategory = await _context.Categorys.FirstOrDefaultAsync(s => s.Name == "Sick");
+            SickLeave.Type = sickCategory;
+
+            DateTime today = DateTime.Today;
+
+            SickLeave.StartDate = today;
+
+            DateTime tomorrow = DateTime.Today.AddDays(1);
+
+            SickLeave.EndDate = tomorrow;
+
+            SickLeave.Reason = "Not applicable";
+
+            _context.Leaverequest.Add(SickLeave);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Sick leave submitted";
+
+
 
             ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
             ViewData["SelectedStatus"] = selectedStatus;
@@ -106,6 +153,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 LeaverequestTeam = new List<Leaverequest>();
             }
+            return RedirectToPage("/leaverequests/index");
         }
     }
 
