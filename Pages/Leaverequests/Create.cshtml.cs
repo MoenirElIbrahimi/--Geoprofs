@@ -111,11 +111,6 @@ namespace ContosoUniversity.Pages.Leaverequests
             // set leaverequest type
 
             var leaveTypeValue = HttpContext.Request.Form["LeaveType"];
-
-            if (Enum.TryParse<LeaveType>(leaveTypeValue, out var selectedLeaveType))
-            {
-                Leaverequest.Type = selectedLeaveType;
-            }
             
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
