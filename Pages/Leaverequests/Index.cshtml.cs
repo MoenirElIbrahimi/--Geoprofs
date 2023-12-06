@@ -93,6 +93,18 @@ namespace ContosoUniversity.Pages.Leaverequests
                 LeaverequestTeam = await query
                     .Include(lr => lr.Status)
                     .ToListAsync();
+
+                ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
+                ViewData["SelectedStatus"] = selectedStatus;
+                ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
+                ViewData["SelectedStatusTeam"] = selectedStatusTeam;
+
+                Statuses = await _context.GetStatusesAsync();
+
+                if (LeaverequestTeam == null)
+                {
+                    LeaverequestTeam = new List<Leaverequest>();
+                }
             }
         }
 
@@ -140,19 +152,6 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             TempData["SuccessMessage"] = "Sick leave submitted";
 
-
-
-            ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
-            ViewData["SelectedStatus"] = selectedStatus;
-            ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
-            ViewData["SelectedStatusTeam"] = selectedStatusTeam;
-
-            Statuses = await _context.GetStatusesAsync();
-
-            if (LeaverequestTeam == null)
-            {
-                LeaverequestTeam = new List<Leaverequest>();
-            }
             return RedirectToPage("/leaverequests/index");
         }
     }
