@@ -5,7 +5,8 @@
         public int ID { get; set; }
         public string Reason { get; set; }
 
-        public Category Type { get; set; }
+        public LeaveType Type { get; set; }
+
         public Status Status { get; set; }
 
         public DateTime StartDate { get; set; }
@@ -15,5 +16,15 @@
         public Employee Employee { get; set; }
 
         public string Remark { get; set; }
+
+        public enum LeaveType
+        {
+            Requested,
+            hallo,
+            vakantie,
+            speciaal,
+            // Voeg andere leave types toe zoals nodig
+        }
     }
 }
+

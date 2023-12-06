@@ -1,5 +1,7 @@
 ﻿@page
 @model ContosoUniversity.Pages.Leaverequests.CreateModel
+@using ContosoUniversity.Models
+
 
 @{
     ViewData["Title"] = "Create";
@@ -14,13 +16,25 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Leaverequest.Reason" class="control-label"></label>
+                <label asp-for="Leaverequest.Reason" class="control-label">Reason</label>
                 <textarea asp-for="Leaverequest.Reason" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.Type" class="control-label">Leave Type</label>
+                @if (ViewData["Statuses"] != null)
+                {
+                    <select asp-for="Leaverequest.Type" asp-items="@(new SelectList(ViewData["Statuses"] as List<Category>, "ID", "Name"))" class="form-control"></select>
+                }
+                else
+                {
+                    <p>No statuses available.</p>
+                }
+                <span asp-validation-for="Leaverequest.Type" class="text-danger"></span>
+            </div>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label asp-for="Leaverequest.StartDate" class="control-label">start of leave</label>
+                    <label asp-for="Leaverequest.StartDate" class="control-label">Start of leave</label>
                     <input type="date" asp-for="Leaverequest.StartDate" class="form-control" />
                     <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
                 </div>
@@ -42,5 +56,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

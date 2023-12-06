@@ -1,5 +1,6 @@
 ﻿using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Identity;
+using static ContosoUniversity.Models.Leaverequest;
 
 
 
@@ -154,7 +155,7 @@ namespace ContosoUniversity.Data
                         EndDate = DateTime.Now.AddHours(1),
                         Status = statuses[i % 4],
                         Employee = employee,
-                        Type = categories[i % 3]
+                        Type = (LeaveType)i 
                     };
                     context.Leaverequests.Add(leaveRequest);
                 }
