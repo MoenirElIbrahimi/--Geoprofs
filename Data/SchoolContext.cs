@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
+using System.Collections.Generic; 
+using System.Threading.Tasks;
 
 namespace ContosoUniversity.Data
 {
@@ -22,6 +24,10 @@ namespace ContosoUniversity.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }
 
+        public async Task<List<Status>> GetStatusesAsync()
+        {
+            return await Statuses.ToListAsync();
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Course>().ToTable("Course");
