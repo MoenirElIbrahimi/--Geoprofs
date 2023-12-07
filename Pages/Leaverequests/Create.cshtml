@@ -21,16 +21,16 @@
                 <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Leaverequest.Type" class="control-label">Leave Type</label>
+                <label asp-for="Leaverequest.Category" class="control-label">Leave Category</label>
                 @if (ViewData["Statuses"] != null)
                 {
-                    <select asp-for="Leaverequest.Type" asp-items="@(new SelectList(ViewData["Statuses"] as List<Category>, "ID", "Name"))" class="form-control"></select>
+                    <select asp-for="Leaverequest.Category" asp-items="@(new SelectList(ViewData["Statuses"] as List<Category>, "ID", "Name"))" class="form-control"></select>
                 }
                 else
                 {
                     <p>No statuses available.</p>
                 }
-                <span asp-validation-for="Leaverequest.Type" class="text-danger"></span>
+                <span asp-validation-for="Leaverequest.Category" class="text-danger"></span>
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
