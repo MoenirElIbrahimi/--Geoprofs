@@ -63,7 +63,7 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-
+<button type="button" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
 @if (TempData.ContainsKey("SuccessMessage"))
 {
     <div class="alert alert-success">
@@ -91,6 +91,9 @@
     <tbody>
       @foreach (var item in Model.Leaverequest) {
         <tr>
+            <td>
+                <input type="checkbox" name="selectedItems" value="@item.ID" />
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
@@ -171,6 +174,9 @@
           @foreach (var item in Model.LeaverequestTeam) {
             <tr>
                 <td>
+                    <input type="checkbox" name="selectedItems" value="@item.ID" />
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Reason)
                 </td>
                 <td style="color: @item.Status.Color;">
@@ -194,3 +200,26 @@
     </table>
   }
 }
+
+<script>
+    document.getElementById('selectAll').addEventListener('change', function () {
+        var checkboxes = document.getElementsByName('selectedItems');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = document.getElementById('selectAll').checked;
+        });
+    });
+
+    document.getElementById('bulkEditButton').addEventListener('click', function () {
+        var selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
+        var selectedIds = Array.from(selectedItems).map(function (checkbox) {
+            return checkbox.value;
+        });
+
+        // Pass selectedIds to the server for processing (you can use AJAX or a form submission)
+        // For simplicity, you can use a hidden input in the form
+        document.getElementById('selectedIdsInput').value = selectedIds.join(',');
+
+        // Trigger the form submission
+        document.getElementById('bulkEditForm').submit();
+    });
+</script>
