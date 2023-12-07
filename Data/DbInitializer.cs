@@ -155,7 +155,7 @@ namespace ContosoUniversity.Data
                         EndDate = DateTime.Now.AddHours(1),
                         Status = statuses[i % 4],
                         Employee = employee,
-                        Type = categories[i % 3]
+                        Category = categories[i % 3]
                     };
                     context.Leaverequests.Add(leaveRequest);
                 }

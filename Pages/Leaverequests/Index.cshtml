@@ -56,7 +56,14 @@
             <option value="@status.Name">@status.Name</option>
         }
     </select>
-
+    <label for="selectedCategory">Filter by Category:</label>
+    <select name="selectedCategory" id="selectedCategory">
+        <option value="">All</option>
+        @foreach (var category in Model.Category)
+        {
+            <option value="@category.Name">@category.Name</option>
+        }
+    </select>
     <button type="submit">Filter</button>
 </form>
 
@@ -76,7 +83,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Reason)
+                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Category)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Status)
@@ -95,7 +102,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Reason)
+                    @Html.DisplayFor(modeltem => item.Category.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status.Name)
@@ -149,6 +156,14 @@
                             }
                         </select>
 
+                <label for="selectedCategory">Filter by Category:</label>
+                <select name="selectedCategory" id="selectedCategory">
+                    <option value="">All</option>
+                @foreach (var category in Model.Category)
+                {
+                        <option value="@category.Name">@category.Name</option>
+                }
+                </select>
                         <button type="submit">Filter (Team)</button>
                     </form>
                 }
@@ -157,7 +172,7 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
+                        @Html.DisplayNameFor(model => model.Leaverequest[0].Category)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
@@ -168,6 +183,7 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
                             </th>
+
                             <th></th>
                         </tr>
                     </thead>
@@ -177,7 +193,7 @@
 
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Reason)
+                                    @Html.DisplayFor(modeltem => item.Category.Name)
                                 </td>
 
                                 <td> 
@@ -189,6 +205,7 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.EndDate)
                                 </td>
+
                                 <td>
 
                                     <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |

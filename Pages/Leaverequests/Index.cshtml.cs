@@ -25,15 +25,19 @@ namespace ContosoUniversity.Pages.Leaverequests
         public IList<Leaverequest> Leaverequest { get; set; } = default!;
 
         public IList<Leaverequest> LeaverequestTeam { get; set; } = default!;
+        
+        public IList<Category> Category { get; set; } = default!;
 
         public Role UserRole { get; set; }
 
         public async Task OnGetAsync(
-            DateTime? selectedDate,
-            string selectedStatus,
-            DateTime? selectedDateTeam,
-            string selectedStatusTeam)
+     DateTime? selectedDate,
+    string selectedStatus,
+    string selectedCategory,
+    DateTime? selectedDateTeam,
+    string selectedStatusTeam)
         {
+
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == default)
             {
@@ -65,9 +69,13 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 query = query.Where(lr => lr.Status.Name == selectedStatus);
             }
-
+            if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                query = query.Where(lr => lr.Category.Name == selectedCategory);
+            }
             Leaverequest = await query
                 .Include(lr => lr.Status)
+                .Include(lr => lr.Category)
                 .ToListAsync();
 
             // Filters for the team's leave requests
@@ -89,6 +97,7 @@ namespace ContosoUniversity.Pages.Leaverequests
                 {
                     query = query.Where(lr => lr.Status.Name == selectedStatusTeam);
                 }
+                var categories = await _context.Categorys.ToListAsync();
 
                 LeaverequestTeam = await query
                     .Include(lr => lr.Status)
@@ -136,7 +145,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             SickLeave.Status = firstStatus;
 
             var sickCategory = await _context.Categorys.FirstOrDefaultAsync(s => s.Name == "Sick");
-            SickLeave.Type = sickCategory;
+            SickLeave.Category = sickCategory;
 
             DateTime today = DateTime.Today;
 

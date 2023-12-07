@@ -5,7 +5,7 @@
         public int ID { get; set; }
         public string Reason { get; set; }
 
-        public Category Type { get; set; }
+        public Category Category { get; set; }
 
         public Status Status { get; set; }
 
