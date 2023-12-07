@@ -1,12 +1,11 @@
 ﻿@page
 @model ContosoUniversity.Pages.Leaverequests.IndexModel
 
-
-
 @{
     ViewData["Title"] = "Index";
 
 }    
+
 <div class="">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Index</h1>
@@ -36,7 +35,6 @@
         </div>
     </div>
 </div>
-
 
 <h2>Your leave requests</h2>
 
@@ -91,28 +89,27 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Leaverequest)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Reason)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a>
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
-                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
-        }
+      @foreach (var item in Model.Leaverequest) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reason)
+            </td>
+            <td style="color: @item.Status.Color;">
+                @Html.DisplayFor(modelItem => item.Status.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>
 
@@ -130,82 +127,70 @@
 
 @if (Model.UserRole != default)
 {
-    @if (Model.UserRole.Name == "Manager")
+  @if (Model.UserRole.Name == "Manager")
+  {
+    <h2>Leave requests team</h2>
+    <!-- Form for team's leave requests (visible only for Managers) -->
+    @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
     {
-        <h2>Leave requests team</h2>
-                <!-- Form for team's leave requests (visible only for Managers) -->
-                @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
+        <form method="get">
+            <label for="selectedDateTeam">Filter Start Date (Team):</label>
+            <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+
+            <label for="selectedStatusTeam">Filter by Status (Team):</label>
+            <select name="selectedStatusTeam" id="selectedStatusTeam">
+                <option value="">All</option>
+                @foreach (var status in Model.Statuses)
                 {
-                    <form method="get">
-                        <label for="selectedDateTeam">Filter Start Date (Team):</label>
-                        <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
-
-                        <label for="selectedStatusTeam">Filter by Status (Team):</label>
-                        <select name="selectedStatusTeam" id="selectedStatusTeam">
-                            <option value="">All</option>
-                            @foreach (var status in Model.Statuses)
-                            {
-                                <option value="@status.Name">@status.Name</option>
-                            }
-                        </select>
-
-                        <button type="submit">Filter (Team)</button>
-                    </form>
+                    <option value="@status.Name">@status.Name</option>
                 }
+            </select>
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.LeaverequestTeam)
-                        {
+            <button type="submit">Filter (Team)</button>
+        </form>
+    }         
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          @foreach (var item in Model.LeaverequestTeam) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reason)
+                </td>
+                <td style="color: @item.Status.Color;">
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
 
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Reason)
-                                </td>
-
-                                <td> 
-                                    @Html.DisplayFor(modelItem => item.Status.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.StartDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.EndDate)
-                                </td>
-                                <td>
-
-                                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-
-        }
-
-<script>
-    function CreateSickLeave() {
-        DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
-    }
-</script>
-
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+          }
+        </tbody>
+    </table>
+  }
+}
