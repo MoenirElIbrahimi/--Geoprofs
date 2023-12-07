@@ -6,7 +6,8 @@
 @{
     ViewData["Title"] = "Index";
 }    
-<h1>Index</h1>
+<h1 class="col ">Index</h1>
+
 <h2>Your leave requests</h2>
 
 <p>
@@ -43,7 +44,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
-            <td>
+            <td style="color: @item.Status.Color;">
                 @Html.DisplayFor(modelItem => item.Status.Name)
             </td>
             <td>
@@ -101,7 +102,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
-            <td> 
+            <td style="color: @item.Status.Color;">
                 @Html.DisplayFor(modelItem => item.Status.Name)
             </td>
             <td>
