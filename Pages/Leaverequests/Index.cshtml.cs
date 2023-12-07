@@ -94,18 +94,19 @@ namespace ContosoUniversity.Pages.Leaverequests
                     .Include(lr => lr.Status)
                     .ToListAsync();
 
-                ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
-                ViewData["SelectedStatus"] = selectedStatus;
-                ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
-                ViewData["SelectedStatusTeam"] = selectedStatusTeam;
 
-                Statuses = await _context.GetStatusesAsync();
 
                 if (LeaverequestTeam == null)
                 {
                     LeaverequestTeam = new List<Leaverequest>();
                 }
             }
+            ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
+            ViewData["SelectedStatus"] = selectedStatus;
+            ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
+            ViewData["SelectedStatusTeam"] = selectedStatusTeam;
+
+            Statuses = await _context.GetStatusesAsync();
         }
 
         public Leaverequest SickLeave { get; set; }
