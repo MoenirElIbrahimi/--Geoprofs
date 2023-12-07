@@ -1,14 +1,64 @@
 ﻿@page
 @model ContosoUniversity.Pages.Leaverequests.IndexModel
 
-
-
 @{
     ViewData["Title"] = "Index";
+
 }    
-<h1 class="col ">Index</h1>
+
+<div class="">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Index</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
+    </div>
+</div>
+
+<!-- Bootstrap Modal for confirmation -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to call in sick?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form method="post">
+                    <button type="submit" class="btn btn-primary" id="confirmAction" onclick="CreateSickLeave()">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h2>Your leave requests</h2>
+
+@{
+    var selectedDate = ViewData["SelectedDate"] as string;
+}
+
+<form method="get">
+    <label for="selectedDate">Filter Start Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate" value="@ViewData["SelectedDate"]" />
+
+    <label for="selectedStatus">Filter by Status:</label>
+    <select name="selectedStatus" id="selectedStatus">
+        <option value="">All</option>
+        @foreach (var status in Model.Statuses)
+        {
+            <option value="@status.Name">@status.Name</option>
+        }
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -39,7 +89,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Leaverequest) {
+      @foreach (var item in Model.Leaverequest) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
@@ -67,59 +117,80 @@
     ViewData["Title"] = "Index";
 }
 
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
-@if (Model.UserRole != default) {
- @if (Model.UserRole.Name == "Manager"){
-<h2>Leave requests team</h2>
 
+@if (Model.UserRole != default)
+{
+  @if (Model.UserRole.Name == "Manager")
+  {
+    <h2>Leave requests team</h2>
+    <!-- Form for team's leave requests (visible only for Managers) -->
+    @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
+    {
+        <form method="get">
+            <label for="selectedDateTeam">Filter Start Date (Team):</label>
+            <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.LeaverequestTeam) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td style="color: @item.Status.Color;">
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
+            <label for="selectedStatusTeam">Filter by Status (Team):</label>
+            <select name="selectedStatusTeam" id="selectedStatusTeam">
+                <option value="">All</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status.Name">@status.Name</option>
+                }
+            </select>
 
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-}
+            <button type="submit">Filter (Team)</button>
+        </form>
+    }         
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          @foreach (var item in Model.LeaverequestTeam) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reason)
+                </td>
+                <td style="color: @item.Status.Color;">
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+
+                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+          }
+        </tbody>
+    </table>
+  }
 }

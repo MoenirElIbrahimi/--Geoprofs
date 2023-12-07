@@ -1,5 +1,6 @@
 ﻿using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Identity;
+using static ContosoUniversity.Models.Leaverequest;
 
 
 
@@ -123,9 +124,9 @@ namespace ContosoUniversity.Data
           
             var categories = new Category[]
             {
-                new Category{Name="Vakantie"},
-                new Category{Name="Persoonlijk"},
-                new Category{Name="Ziek"},
+                new Category{Name="Vacation"},
+                new Category{Name="Personal"},
+                new Category{Name="Sick"},
             };
           
             context.Categorys.AddRange(categories);
