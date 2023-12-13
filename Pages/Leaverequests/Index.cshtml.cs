@@ -111,6 +111,10 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public Leaverequest SickLeave { get; set; }
 
+        public string[] SelectedIds { get; set; }
+
+        public string SelectedStatus { get; set; }
+
         public async Task<IActionResult> OnPostAsync()
         {
             var userId = HttpContext.Session.GetInt32("userId");

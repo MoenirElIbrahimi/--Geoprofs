@@ -63,7 +63,7 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<button type="button" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
+
 @if (TempData.ContainsKey("SuccessMessage"))
 {
     <div class="alert alert-success">
@@ -91,9 +91,6 @@
     <tbody>
       @foreach (var item in Model.Leaverequest) {
         <tr>
-            <td>
-                <input type="checkbox" name="selectedItems" value="@item.ID" />
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
@@ -139,7 +136,7 @@
         <form method="get">
             <label for="selectedDateTeam">Filter Start Date (Team):</label>
             <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
-
+                
             <label for="selectedStatusTeam">Filter by Status (Team):</label>
             <select name="selectedStatusTeam" id="selectedStatusTeam">
                 <option value="">All</option>
@@ -151,10 +148,25 @@
 
             <button type="submit">Filter (Team)</button>
         </form>
-    }         
+    }
+        <form method="post" id="bulkEditForm">
+            <!-- ... andere formulierelementen ... -->
+            <input type="hidden" name="selectedIds" id="selectedIdsInput" />
+            <button type="button" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
+            <select id="optionsDropdown" name="optionsDropdown" class="form-control">
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status.Name">@status.Name</option>
+                }
+            </select>
+        </form>
+
     <table class="table">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" id="selectAll" />
+                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
                 </th>
@@ -201,7 +213,7 @@
   }
 }
 
-<script>
+<script defer>
     document.getElementById('selectAll').addEventListener('change', function () {
         var checkboxes = document.getElementsByName('selectedItems');
         checkboxes.forEach(function (checkbox) {
@@ -215,11 +227,17 @@
             return checkbox.value;
         });
 
-        // Pass selectedIds to the server for processing (you can use AJAX or a form submission)
-        // For simplicity, you can use a hidden input in the form
-        document.getElementById('selectedIdsInput').value = selectedIds.join(',');
+        // Geselecteerde waarde in de dropdown
+        var selectedOption = document.getElementById('optionsDropdown').value;
 
-        // Trigger the form submission
-        document.getElementById('bulkEditForm').submit();
+        // Stuur de geselecteerde ID's en dropdown-waarde naar de server voor verwerking
+        document.getElementById('selectedIdsInput').value = selectedIds.join(',');
+        document.getElementById('selectedOptionInput').value = selectedOption;
+
+        // Het formulier wordt nu automatisch verzonden omdat de knop van het formulier wordt gebruikt
     });
 </script>
+
+
+
+
