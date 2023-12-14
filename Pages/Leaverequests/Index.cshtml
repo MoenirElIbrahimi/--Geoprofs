@@ -5,7 +5,6 @@
     ViewData["Title"] = "Index";
 
 }    
-
 <div class="">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Index</h1>
@@ -13,9 +12,27 @@
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
                 <button type="button" class="btn btn-primary"  OnClick="toggleNotificationContainer()">show notifactions</button>
             <div id="notification-container" style="display: none;">
+                
+                
+                @foreach (var item in Model.Leaverequest)
+                //make it so the leaverequests save at what time they are made
+                //before 10.00 notifications
+                {
                 <div class="notification">
-                    <!-- Notification content goes here -->
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Reason)
+                    </td>
+                    <td style="color: @item.Status.Color;">
+                        @Html.DisplayFor(modelItem => item.Status.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
                 </div>
+                }
             </div>
         </div>
         
