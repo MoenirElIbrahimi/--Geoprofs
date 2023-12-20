@@ -28,12 +28,14 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public Role UserRole { get; set; }
 
+        public IList<Category> Category { get; set; } = default;
         public async Task OnGetAsync(
             DateTime? selectedDate,
             string selectedStatus,
             DateTime? selectedDateTeam,
             string selectedStatusTeam)
         {
+
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == default)
             {
