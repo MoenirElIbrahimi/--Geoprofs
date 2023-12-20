@@ -22,15 +22,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Leaverequest.Category" class="control-label">Leave Category</label>
-                @if (ViewData["Statuses"] != null)
+                @if (ViewData["Categories"] != null)
                 {
-                    <select asp-for="Leaverequest.Category" asp-items="@(new SelectList(ViewData["Statuses"] as List<Category>, "ID", "Name"))" class="form-control"></select>
+                    <select asp-for="Leaverequest.Category.ID" asp-items="@(new SelectList(Model.Categorys, "ID", "Name"))" class="form-control">
+                        <option value="">Select a Category</option>
+                    </select>
                 }
                 else
                 {
-                    <p>No statuses available.</p>
+                    <p>No categories available.</p>
                 }
-                <span asp-validation-for="Leaverequest.Category" class="text-danger"></span>
+                <span asp-validation-for="Leaverequest.Category.ID" class="text-danger"></span>
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">

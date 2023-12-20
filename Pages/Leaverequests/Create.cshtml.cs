@@ -23,21 +23,25 @@ namespace ContosoUniversity.Pages.Leaverequests
             _context = context;
         }
 
+        public Leaverequest Leaverequest { get; set; }
+        public SelectList Categorys { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             // Laad statussen vanuit de database en wijs deze toe aan ViewData
             //ViewData["Statuses"] = await _context.Statuses.ToListAsync();
 
-            var statuses = await _context.Categorys.ToListAsync();
+            Categorys = new SelectList(_context.Categorys, "ID", "Name");
+            Leaverequest = new Leaverequest();
 
-            if (statuses != null && statuses.Any())
+            if (Categorys != null && Categorys.Any())
             {
-                ViewData["Statuses"] = statuses;
+                ViewData["Categories"] = Categorys;
             }
             else
             {
                 // If the database query returns null or an empty list, provide default values
-                ViewData["Statuses"] = new List<Category>
+                ViewData["Categories"] = new List<Category>
                 {
                     new Category { ID = 1, Name = "Vakantie" },
                     new Category { ID = 2, Name = "Persoonlijk" },
@@ -68,9 +72,6 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             return Page();
         }
-
-        [BindProperty]
-        public Leaverequest Leaverequest { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -110,8 +111,12 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             // set leaverequest type
 
-            var leaveTypeValue = HttpContext.Request.Form["LeaveType"];
-            
+            var leaveTypeValue = HttpContext.Request.Form["Category"];
+
+            var selectedCategory = _context.Categorys.FirstOrDefault(c => c.ID == SelectedCategoryId);
+
+            Leaverequest.Category = selectedCategory;
+
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
             
