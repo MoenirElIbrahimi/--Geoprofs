@@ -20,9 +20,9 @@ ContosoUniversity.Pages.Categorys.IndexModel
                 @foreach (var item in Model.Leaverequest)
                 {
                     if (item.StartDate.Date == currentDate.Date && item.StartDate.TimeOfDay < tenAM.TimeOfDay) {
-                        var relatedCategory = Model.Category.FirstOrDefault(c => (c.ID == item.Type.ID));  // Assuming Model.Categories holds your Category data
+                        //var relatedCategory = Model.Category.FirstOrDefault(c => (c.ID == item.Type.ID));  // Assuming Model.Categories holds your Category data
 
-                    if (relatedCategory?.Name == "Sick")
+                    if (item.TypeID == "Sick")
                     
                         {
                             <div class="notification">
