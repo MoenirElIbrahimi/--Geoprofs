@@ -24,6 +24,11 @@ namespace ContosoUniversity.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }
 
+        public async Task<List<Category>> GetCategoriesAsync()
+        {
+            return await Categorys.ToListAsync();
+        }
+
         public async Task<List<Status>> GetStatusesAsync()
         {
             return await Statuses.ToListAsync();
