@@ -70,6 +70,14 @@
         @TempData["SuccessMessage"]
     </div>
 }
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -112,18 +120,6 @@
 }
     </tbody>
 </table>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
-    </div>
-}
 
 @if (Model.UserRole != default)
 {
