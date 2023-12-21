@@ -7,6 +7,10 @@
 - de tijd in nederlands formaat dag-maand-jaar
 - prioriteit gebazeerd op wie eerst de aanvraag.
 
+feedback tussendijdse sprint review 15 december
+- bugs meer context geven
+- bugs documenteren op een manier dat andere ze kunnen nabootsen door gebruik te maken van een stappenplan.
+
 UC14:
 - IK zou het in dezelfde tabel willen, maar ik wil kunnen filteren op een reden of op status.
 

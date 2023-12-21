@@ -1,5 +1,6 @@
 ﻿using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Drawing;
 using static ContosoUniversity.Models.Leaverequest;
 
 
@@ -134,10 +135,9 @@ namespace ContosoUniversity.Data
           
             var statuses = new Status[]
             {
-                new Status{Name="Requested"},
-                new Status{Name="In Progress"},
-                new Status{Name="Accepted"},
-                new Status{Name="Denied"},
+                new Status{Name="Requested", Color="#63A2E2"},
+                new Status{Name="Accepted", Color="#46C298"},
+                new Status{Name="Denied", Color="#E64A2C"},
             };
           
             context.Statuses.AddRange(statuses);
@@ -153,7 +153,7 @@ namespace ContosoUniversity.Data
                         Reason = "Vacation",
                         StartDate = DateTime.Now,
                         EndDate = DateTime.Now.AddHours(1),
-                        Status = statuses[i % 4],
+                        Status = statuses[i % 3],
                         Employee = employee,
                         Category = categories[i % 3]
                     };
