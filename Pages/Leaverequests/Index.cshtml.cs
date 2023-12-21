@@ -31,12 +31,12 @@ namespace ContosoUniversity.Pages.Leaverequests
         public Role UserRole { get; set; }
 
         public async Task OnGetAsync(
-            DateTime? selectedDate,
-            string selectedStatus,
-            string selectedCategory,
-            string selectedCategoryTeam,
-            DateTime? selectedDateTeam,
-            string selectedStatusTeam)
+     DateTime? selectedDate,
+    string selectedStatus,
+    string selectedCategory,
+    string selectedCategoryTeam,
+    DateTime? selectedDateTeam,
+    string selectedStatusTeam)
         {
             Category = await _context.GetCategoriesAsync();
             var userId = HttpContext.Session.GetInt32("userId");
@@ -52,6 +52,7 @@ namespace ContosoUniversity.Pages.Leaverequests
                 .Include(e => e.Team)
                 .FirstOrDefaultAsync(e => e.ID == userId);
 
+            // Controleer of de currentUser null is voordat je verder gaat
             if (currentUser == null)
             {
                 RedirectToPage("/403");
@@ -59,86 +60,99 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             UserRole = currentUser.Role;
 
+            // Defineer de variabele 'query'
             var query = _context.Leaverequest.Where(lr => lr.Employee.ID == userId);
 
+            // ... (andere logica die query gebruikt)
+
+            Leaverequest = await query
+                .Include(lr => lr.Status)
+                .Include(lr => lr.Category)
+                .ToListAsync();
+            if (selectedDate.HasValue)
+            {
+                query = query.Where(lr => lr.StartDate.Date <= selectedDate.Value.Date &&
+                                          selectedDate.Value.Date < lr.EndDate.Date);
+            }
+            if (!string.IsNullOrEmpty(selectedStatus))
+            {
+                query = query.Where(lr => lr.Status.Name == selectedStatus);
+            }
+            if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                query = query.Where(lr => lr.Category.Name == selectedCategory);
+            }
+            Leaverequest = await query
+                .Include(lr => lr.Status)
+                .Include(lr => lr.Category)
+                .ToListAsync();
             if (UserRole.Name == "Manager")
             {
                 query = _context.Leaverequest
                     .Include(lr => lr.Employee)
                     .ThenInclude(e => e.Team)
                     .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID &&
-                                    lr.Employee.ID != userId);
-
-                if (!string.IsNullOrEmpty(selectedCategoryTeam))
-                {
-                    query = query.Where(lr => lr.Category.Name == selectedCategoryTeam);
-                }
+                                  lr.Employee.ID != userId);
 
                 if (selectedDateTeam.HasValue)
                 {
                     query = query.Where(lr => lr.StartDate.Date <= selectedDateTeam.Value.Date &&
-                                               selectedDateTeam.Value.Date < lr.EndDate.Date);
+                                              selectedDateTeam.Value.Date < lr.EndDate.Date);
                 }
 
                 if (!string.IsNullOrEmpty(selectedStatusTeam))
                 {
                     query = query.Where(lr => lr.Status.Name == selectedStatusTeam);
                 }
+                if (!string.IsNullOrEmpty(selectedCategoryTeam))
+                {
+                    query = query.Where(lr => lr.Category.Name == selectedCategoryTeam);
+                }
+                var categories = await _context.Categorys.ToListAsync();
 
                 LeaverequestTeam = await query
                     .Include(lr => lr.Status)
                     .ToListAsync();
+
+                if (LeaverequestTeam == null)
+                {
+                    LeaverequestTeam = new List<Leaverequest>();
+                }
             }
             else // Apply team filters if the user is not a manager
             {
-                query = _context.Leaverequest
+                var teamQuery = _context.Leaverequest
                     .Include(lr => lr.Employee)
                     .ThenInclude(e => e.Team)
                     .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID &&
-                                    lr.Employee.ID != userId);
-
-                if (!string.IsNullOrEmpty(selectedCategoryTeam))
-                {
-                    query = query.Where(lr => lr.Category.Name == selectedCategoryTeam);
-                }
+                                  lr.Employee.ID != userId);
 
                 if (selectedDateTeam.HasValue)
                 {
-                    query = query.Where(lr => lr.StartDate.Date <= selectedDateTeam.Value.Date &&
-                                               selectedDateTeam.Value.Date < lr.EndDate.Date);
+                    teamQuery = teamQuery.Where(lr => lr.StartDate.Date <= selectedDateTeam.Value.Date &&
+                                                       selectedDateTeam.Value.Date < lr.EndDate.Date);
                 }
 
                 if (!string.IsNullOrEmpty(selectedStatusTeam))
                 {
-                    query = query.Where(lr => lr.Status.Name == selectedStatusTeam);
+                    teamQuery = teamQuery.Where(lr => lr.Status.Name == selectedStatusTeam);
+                }
+                if (!string.IsNullOrEmpty(selectedCategoryTeam))
+                {
+                    teamQuery = teamQuery.Where(lr => lr.Category.Name == selectedCategoryTeam);
                 }
 
-                LeaverequestTeam = await query
+                var categories = await _context.Categorys.ToListAsync();
+
+                LeaverequestTeam = await teamQuery
                     .Include(lr => lr.Status)
                     .ToListAsync();
+
+                if (LeaverequestTeam == null)
+                {
+                    LeaverequestTeam = new List<Leaverequest>();
+                }
             }
-
-            if (selectedDate.HasValue)
-            {
-                query = query.Where(lr => lr.StartDate.Date <= selectedDate.Value.Date &&
-                                              selectedDate.Value.Date < lr.EndDate.Date);
-            }
-
-            if (!string.IsNullOrEmpty(selectedStatus))
-            {
-                query = query.Where(lr => lr.Status.Name == selectedStatus);
-            }
-
-            if (!string.IsNullOrEmpty(selectedCategory))
-            {
-                query = query.Where(lr => lr.Category.Name == selectedCategory);
-            }
-
-            Leaverequest = await query
-                .Include(lr => lr.Status)
-                .Include(lr => lr.Category)
-                .ToListAsync();
-
             ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
             ViewData["SelectedStatus"] = selectedStatus;
             ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
