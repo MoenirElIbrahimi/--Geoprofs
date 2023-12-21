@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using System.Runtime.CompilerServices;
+using System.Configuration;
 
 namespace ContosoUniversity.Pages.Leaverequests
 {
@@ -115,59 +116,54 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public string SelectedStatus { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(string form1Submit)
+        public string Message { get; set; }
+        public async Task<IActionResult> OnPostBulkEdit()
         {
-
-            if (!string.IsNullOrEmpty(form1Submit))
+            return RedirectToPage("/leaverequests/index");
+        }
+        public async Task<IActionResult> OnPostAsync(int? form1Submit)
+        {
+            var userId = HttpContext.Session.GetInt32("userId");
+            if (userId == default)
             {
-                return RedirectToPage("/leaverequests/index");
+                TempData["ErrorMessage"] = "User ID not found in the session.";
+                return RedirectToPage("/");
             }
-            else
+
+            var currentUser = await _context.Employee
+                .FirstOrDefaultAsync(u => u.ID == userId);
+
+            if (currentUser == null)
             {
-
-
-                var userId = HttpContext.Session.GetInt32("userId");
-                if (userId == default)
-                {
-                    TempData["ErrorMessage"] = "User ID not found in the session.";
-                    return RedirectToPage("/");
-                }
-
-                var currentUser = await _context.Employee
-                    .FirstOrDefaultAsync(u => u.ID == userId);
-
-                if (currentUser == null)
-                {
-                    return RedirectToPage("/403");
-                }
-
-                SickLeave = new Leaverequest();
-
-                SickLeave.Employee = currentUser;
-
-                var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
-                SickLeave.Status = firstStatus;
-
-                var sickCategory = await _context.Categorys.FirstOrDefaultAsync(s => s.Name == "Sick");
-                SickLeave.Type = sickCategory;
-
-                DateTime today = DateTime.Today;
-
-                SickLeave.StartDate = today;
-
-                DateTime tomorrow = DateTime.Today.AddDays(1);
-
-                SickLeave.EndDate = tomorrow;
-
-                SickLeave.Reason = "Not applicable";
-
-                _context.Leaverequest.Add(SickLeave);
-                await _context.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = "Sick leave submitted";
-
-                return RedirectToPage("/leaverequests/index");
+                return RedirectToPage("/403");
             }
+
+            SickLeave = new Leaverequest();
+
+            SickLeave.Employee = currentUser;
+
+            var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
+            SickLeave.Status = firstStatus;
+
+            var sickCategory = await _context.Categorys.FirstOrDefaultAsync(s => s.Name == "Sick");
+            SickLeave.Type = sickCategory;
+
+            DateTime today = DateTime.Today;
+
+            SickLeave.StartDate = today;
+
+            DateTime tomorrow = DateTime.Today.AddDays(1);
+
+            SickLeave.EndDate = tomorrow;
+
+            SickLeave.Reason = "Not applicable";
+
+            _context.Leaverequest.Add(SickLeave);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Sick leave submitted";
+
+            return RedirectToPage("/leaverequests/index");
         }
     }
 

@@ -148,10 +148,11 @@
 
             <button type="submit">Filter (Team)</button>
         </form>
-    }
-        <form method="post" id="bulkEditForm">
+        }
+
+        <form asp-page-handler="bulkedit" method="post" id="bulkEditForm">
             <!-- ... andere formulierelementen ... -->
-            <input type="hidden" name="selectedIds" id="selectedIdsInput" />
+            <input type="hidden" asp-for="Leaverequest[0].ID" />
             <button type="submit" class="btn btn-primary" id="bulkEditButton" name="form1Submit">Bulk Edit</button>
             <select id="optionsDropdown" name="optionsDropdown" class="form-control">
                 @foreach (var status in Model.Statuses)
