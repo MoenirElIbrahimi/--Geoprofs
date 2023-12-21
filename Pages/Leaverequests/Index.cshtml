@@ -159,8 +159,8 @@
                             }
                         </select>
 
-                <label for="selectedCategory">Filter by Category:</label>
-                <select name="selectedCategory" id="selectedCategory">
+                <label for="selectedCategoryTeam">Filter by Category (Team):</label>
+                <select name="selectedCategoryTeam" id="selectedCategoryTeam">
                     <option value="">All</option>
                     @if (Model.Category != null)
                     {
@@ -170,7 +170,8 @@
                         }
                     }
                 </select>
-                        <button type="submit">Filter</button>
+                <button type="submit">Filter (Team)</button>
+
                     </form>
                 }
 
