@@ -23,34 +23,17 @@ namespace ContosoUniversity.Pages.Leaverequests
             _context = context;
         }
 
+        [BindProperty]
         public Leaverequest Leaverequest { get; set; }
-        public SelectList Categorys { get; set; }
+
+        [BindProperty]
+        public int LeaverequestCategory { get; set; }
+
+        public List<Category> Categorys { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Laad statussen vanuit de database en wijs deze toe aan ViewData
-            //ViewData["Statuses"] = await _context.Statuses.ToListAsync();
-
-            Categorys = new SelectList(_context.Categorys, "ID", "Name");
-            Leaverequest = new Leaverequest();
-
-            if (Categorys != null && Categorys.Any())
-            {
-                ViewData["Categories"] = Categorys;
-            }
-            else
-            {
-                // If the database query returns null or an empty list, provide default values
-                ViewData["Categories"] = new List<Category>
-                {
-                    new Category { ID = 1, Name = "Vakantie" },
-                    new Category { ID = 2, Name = "Persoonlijk" },
-                    new Category { ID = 3, Name = "Ziek" },
-                };
-            }
-
-
-
+            Categorys = await _context.Categorys.ToListAsync();
 
             // Get the userId from the session
             var userId = HttpContext.Session.GetInt32("userId") ?? default;
@@ -76,11 +59,18 @@ namespace ContosoUniversity.Pages.Leaverequests
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
+            Categorys = await _context.Categorys.ToListAsync();
+
+            // set leaverequest category
+            Leaverequest.Category = await _context.Categorys.FirstOrDefaultAsync(c => c.ID == LeaverequestCategory);
+
+            TempData["SelectedCategory"] = LeaverequestCategory;
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            
+
             if (Leaverequest.StartDate > Leaverequest.EndDate)
             {
                 ModelState.AddModelError(string.Empty, "Start date must be earlier than the end date.");
@@ -109,19 +99,40 @@ namespace ContosoUniversity.Pages.Leaverequests
             var firstStatus = await _context.Statuses.FirstOrDefaultAsync();
             Leaverequest.Status = firstStatus;
 
-            // set leaverequest type
+            // Check if Category is sick
+            if (Leaverequest.Category.Name == "Sick")
+            {
+                // Check if sickleave is for today, if not return
+                if (Leaverequest.StartDate.Date != DateTime.Today)
+                {
+                    ModelState.AddModelError(string.Empty, "Can only submit sick leave for today");
+                    return Page();
+                }
 
-            var leaveTypeValue = HttpContext.Request.Form["Category"];
+                // Check if sickleave enddate is set to tomorrow, if not return
+                if (Leaverequest.EndDate != DateTime.Today.AddDays(1))
+                {
+                    ModelState.AddModelError(string.Empty, "Can only submit sick leave for a single day");
+                    return Page();
+                }
 
-            var selectedCategory = _context.Categorys.FirstOrDefault(c => c.ID == SelectedCategoryId);
+                bool hasSickLeaveForToday = await _context.Leaverequest.AnyAsync(
+                l => l.Employee.ID == currentUser.ID
+                    && l.Category.Name == "Sick"
+                    && l.StartDate.Date == DateTime.Today);
 
-            Leaverequest.Category = selectedCategory;
+                if (hasSickLeaveForToday)
+                {
+                    ModelState.AddModelError(string.Empty, "Already submitted sick leave for today");
+                    return Page();
+                }
+            }
 
             _context.Leaverequest.Add(Leaverequest);
             await _context.SaveChangesAsync();
-            
+
             TempData["SuccessMessage"] = "Leave request submitted";
-            
+
             return RedirectToPage("/leaverequests/index");
         }
     }

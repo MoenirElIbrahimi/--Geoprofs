@@ -21,18 +21,16 @@
                 <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Leaverequest.Category" class="control-label">Leave Category</label>
-                @if (ViewData["Categories"] != null)
+                <label asp-for="Leaverequest.Category" class="control-label">Category</label>
+                @if (Model.Categorys != null && Model.Categorys.Any())
                 {
-                    <select asp-for="Leaverequest.Category.ID" asp-items="@(new SelectList(Model.Categorys, "ID", "Name"))" class="form-control">
-                        <option value="">Select a Category</option>
-                    </select>
+                    <select name="LeaverequestCategory" asp-items="@(new SelectList(Model.Categorys, "ID", "Name"))" class="form-control"></select>
                 }
                 else
                 {
-                    <p>No categories available.</p>
+                    <p>No Categorys available.</p>
                 }
-                <span asp-validation-for="Leaverequest.Category.ID" class="text-danger"></span>
+                <span asp-validation-for="Leaverequest.Category" class="text-danger"></span>
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
@@ -56,6 +54,13 @@
 <div>
     <a asp-page="Index">Back to List</a>
 </div>
+
+@if (TempData["SelectedCategory"] != null)
+{
+    <script>
+        document.querySelector('select[name="LeaverequestCategory"]').value = '@TempData["SelectedCategory"]';
+    </script>
+}
 
 @section Scripts {
     @{
