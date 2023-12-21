@@ -25,6 +25,7 @@ namespace ContosoUniversity.Pages.Leaverequests
         public IList<Leaverequest> Leaverequest { get; set; } = default!;
 
         public IList<Leaverequest> LeaverequestTeam { get; set; } = default!;
+        public IList<Leaverequest> LeaverequestNotifications { get; set; } = default!;
 
         public Role UserRole { get; set; }
 
@@ -67,7 +68,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 query = query.Where(lr => lr.Status.Name == selectedStatus);
             }
-
+            
             Leaverequest = await query
                 .Include(lr => lr.Status)
                 .ToListAsync();
@@ -75,7 +76,20 @@ namespace ContosoUniversity.Pages.Leaverequests
             // Filters for the team's leave requests
             if (UserRole.Name == "Manager")
             {
-                query = _context.Leaverequest
+
+
+                var tenAM = DateTime.Today.AddHours(10);
+                LeaverequestNotifications = await query
+                    .Include(lr => lr.Status)
+                    .Include(lr => lr.Type)
+                    .Where(lr => lr.StartDate.Date == DateTime.Now.Date)
+                    .Where(lr => lr.StartDate.TimeOfDay < tenAM.TimeOfDay)
+                    .Where(lr => lr.Type.ID == 3)
+                    .ToListAsync();
+
+               // LeaverequestNotifications.All
+
+                    query = _context.Leaverequest
                     .Include(lr => lr.Employee)
                     .ThenInclude(e => e.Team)
                     .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID &&

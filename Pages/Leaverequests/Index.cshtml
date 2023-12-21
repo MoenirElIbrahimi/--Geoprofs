@@ -5,7 +5,6 @@ ContosoUniversity.Pages.Categorys.IndexModel
 @{
     ViewData["Title"] = "Index";
     var currentDate = DateTime.Now;
-    var tenAM = DateTime.Today.AddHours(10);
 
 }    
 <div class="">
@@ -17,30 +16,27 @@ ContosoUniversity.Pages.Categorys.IndexModel
             <div id="notification-container" style="display: none;">
                 
                 
-                @foreach (var item in Model.Leaverequest)
+                @foreach (var item in Model.LeaverequestNotifications)
                 {
-                    if (item.StartDate.Date == currentDate.Date && item.StartDate.TimeOfDay < tenAM.TimeOfDay) {
-                        //var relatedCategory = Model.Category.FirstOrDefault(c => (c.ID == item.Type.ID));  // Assuming Model.Categories holds your Category data
 
-                    if (item.TypeID == "Sick")
-                    
-                        {
-                            <div class="notification">
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Reason)
-                                </td>
-                                <td style="color: @item.Status.Color;">
-                                    @Html.DisplayFor(modelItem => item.Status.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.StartDate)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.EndDate)
-                                </td>
-                            </div>
-                        }
-                    }
+                    //var relatedCategory = Model.Category.FirstOrDefault(c => (c.ID == item.Type.ID));  // Assuming Model.Categories holds your Category data
+
+                        <div class="notification">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Reason)
+                            </td>
+                            <td style="color: @item.Status.Color;">
+                                @Html.DisplayFor(modelItem => item.Status.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StartDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EndDate)
+                            </td>
+                        </div>
+                   
+
                 }
             </div>
         </div>
