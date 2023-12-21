@@ -133,7 +133,7 @@
     <!-- Form for team's leave requests (visible only for Managers) -->
     @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
     {
-        <form method="get">
+            <form method="get" id="filterLeaveRequestsForm">
             <label for="selectedDateTeam">Filter Start Date (Team):</label>
             <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
                 
@@ -152,7 +152,7 @@
         <form method="post" id="bulkEditForm">
             <!-- ... andere formulierelementen ... -->
             <input type="hidden" name="selectedIds" id="selectedIdsInput" />
-            <button type="button" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
+            <button type="submit" class="btn btn-primary" id="bulkEditButton" name="form1Submit">Bulk Edit</button>
             <select id="optionsDropdown" name="optionsDropdown" class="form-control">
                 @foreach (var status in Model.Statuses)
                 {
@@ -226,15 +226,6 @@
         var selectedIds = Array.from(selectedItems).map(function (checkbox) {
             return checkbox.value;
         });
-
-        // Geselecteerde waarde in de dropdown
-        var selectedOption = document.getElementById('optionsDropdown').value;
-
-        // Stuur de geselecteerde ID's en dropdown-waarde naar de server voor verwerking
-        document.getElementById('selectedIdsInput').value = selectedIds.join(',');
-        document.getElementById('selectedOptionInput').value = selectedOption;
-
-        // Het formulier wordt nu automatisch verzonden omdat de knop van het formulier wordt gebruikt
     });
 </script>
 
