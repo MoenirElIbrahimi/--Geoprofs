@@ -117,8 +117,14 @@ namespace ContosoUniversity.Pages.Leaverequests
         public string SelectedStatus { get; set; }
 
         public string Message { get; set; }
+
         public async Task<IActionResult> OnPostBulkEdit()
         {
+            // Hier kun je de waarden van Leaverequest[0].ID en SelectedStatus gebruiken
+            int leaverequestId = Leaverequest[0].ID;
+            // Doe iets met leaverequestId en SelectedStatus
+
+            // Keer terug naar de pagina of voer andere logica uit
             return RedirectToPage("/leaverequests/index");
         }
         public async Task<IActionResult> OnPostAsync(int? form1Submit)
