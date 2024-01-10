@@ -26,14 +26,19 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public IList<Leaverequest> LeaverequestTeam { get; set; } = default!;
 
+        public IList<Category> Category { get; set; } = default!;
+
         public Role UserRole { get; set; }
 
         public async Task OnGetAsync(
-            DateTime? selectedDate,
-            string selectedStatus,
-            DateTime? selectedDateTeam,
-            string selectedStatusTeam)
+     DateTime? selectedDate,
+    string selectedStatus,
+    string selectedCategory,
+    string selectedCategoryTeam,
+    DateTime? selectedDateTeam,
+    string selectedStatusTeam)
         {
+            Category = await _context.GetCategoriesAsync();
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == default)
             {
@@ -47,6 +52,7 @@ namespace ContosoUniversity.Pages.Leaverequests
                 .Include(e => e.Team)
                 .FirstOrDefaultAsync(e => e.ID == userId);
 
+            // Controleer of de currentUser null is voordat je verder gaat
             if (currentUser == null)
             {
                 RedirectToPage("/403");
@@ -54,8 +60,15 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             UserRole = currentUser.Role;
 
-            // Filters for the current user's leave requests
+            // Defineer de variabele 'query'
             var query = _context.Leaverequest.Where(lr => lr.Employee.ID == userId);
+
+            // ... (andere logica die query gebruikt)
+
+            Leaverequest = await query
+                .Include(lr => lr.Status)
+                .Include(lr => lr.Category)
+                .ToListAsync();
             if (selectedDate.HasValue)
             {
                 query = query.Where(lr => lr.StartDate.Date <= selectedDate.Value.Date &&
@@ -65,12 +78,14 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 query = query.Where(lr => lr.Status.Name == selectedStatus);
             }
-
+            if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                query = query.Where(lr => lr.Category.Name == selectedCategory);
+            }
             Leaverequest = await query
                 .Include(lr => lr.Status)
+                .Include(lr => lr.Category)
                 .ToListAsync();
-
-            // Filters for the team's leave requests
             if (UserRole.Name == "Manager")
             {
                 query = _context.Leaverequest
@@ -89,12 +104,49 @@ namespace ContosoUniversity.Pages.Leaverequests
                 {
                     query = query.Where(lr => lr.Status.Name == selectedStatusTeam);
                 }
+                if (!string.IsNullOrEmpty(selectedCategoryTeam))
+                {
+                    query = query.Where(lr => lr.Category.Name == selectedCategoryTeam);
+                }
+                var categories = await _context.Categorys.ToListAsync();
 
                 LeaverequestTeam = await query
                     .Include(lr => lr.Status)
                     .ToListAsync();
 
+                if (LeaverequestTeam == null)
+                {
+                    LeaverequestTeam = new List<Leaverequest>();
+                }
+            }
+            else // Apply team filters if the user is not a manager
+            {
+                var teamQuery = _context.Leaverequest
+                    .Include(lr => lr.Employee)
+                    .ThenInclude(e => e.Team)
+                    .Where(lr => lr.Employee.Team.ID == currentUser.Team.ID &&
+                                  lr.Employee.ID != userId);
 
+                if (selectedDateTeam.HasValue)
+                {
+                    teamQuery = teamQuery.Where(lr => lr.StartDate.Date <= selectedDateTeam.Value.Date &&
+                                                       selectedDateTeam.Value.Date < lr.EndDate.Date);
+                }
+
+                if (!string.IsNullOrEmpty(selectedStatusTeam))
+                {
+                    teamQuery = teamQuery.Where(lr => lr.Status.Name == selectedStatusTeam);
+                }
+                if (!string.IsNullOrEmpty(selectedCategoryTeam))
+                {
+                    teamQuery = teamQuery.Where(lr => lr.Category.Name == selectedCategoryTeam);
+                }
+
+                var categories = await _context.Categorys.ToListAsync();
+
+                LeaverequestTeam = await teamQuery
+                    .Include(lr => lr.Status)
+                    .ToListAsync();
 
                 if (LeaverequestTeam == null)
                 {
@@ -105,7 +157,8 @@ namespace ContosoUniversity.Pages.Leaverequests
             ViewData["SelectedStatus"] = selectedStatus;
             ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
             ViewData["SelectedStatusTeam"] = selectedStatusTeam;
-
+            ViewData["SelectedCategory"] = selectedCategory;
+            ViewData["SelectedCategoryTeam"] = selectedCategoryTeam;
             Statuses = await _context.GetStatusesAsync();
         }
 
