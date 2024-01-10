@@ -68,6 +68,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             Leaverequest = await query
                 .Include(lr => lr.Status)
                 .Include(lr => lr.Category)
+                .Include(lr => lr.Employee)
                 .ToListAsync();
             if (selectedDate.HasValue)
             {
