@@ -20,6 +20,8 @@ namespace ContosoUniversity.Models
         public Employee Employee { get; set; }
 
         public string Remark { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }
 

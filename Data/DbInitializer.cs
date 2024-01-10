@@ -100,7 +100,8 @@ namespace ContosoUniversity.Data
                         EndDate = DateTime.Now.AddHours(1),
                         Status = statuses[i % 3],
                         Employee = employee,
-                        Category = categories[i % 3]
+                        Category = categories[i % 3],
+                        CreatedAt = DateTime.Now
                     };
                     context.Leaverequests.Add(leaveRequest);
                 }
