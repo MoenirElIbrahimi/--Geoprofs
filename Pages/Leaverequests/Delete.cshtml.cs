@@ -24,6 +24,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            return RedirectToPage("/403");
             if (id == null || _context.Leaverequest == null)
             {
                 return NotFound();
@@ -44,6 +45,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
+            return RedirectToPage("/403");
             if (id == null || _context.Leaverequest == null)
             {
                 return NotFound();
