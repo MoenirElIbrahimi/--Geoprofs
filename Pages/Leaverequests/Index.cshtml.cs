@@ -112,21 +112,33 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public Leaverequest SickLeave { get; set; }
 
-        public string[] SelectedIds { get; set; }
-
         public string SelectedStatus { get; set; }
-
-        public string Message { get; set; }
 
         public async Task<IActionResult> OnPostBulkEdit()
         {
-            // Hier kun je de waarden van Leaverequest[0].ID en SelectedStatus gebruiken
-            int leaverequestId = Leaverequest[0].ID;
-            // Doe iets met leaverequestId en SelectedStatus
+            if (!ModelState.IsValid)
+            {
+                // Als het model ongeldig is, keer terug naar de pagina
+                return Page();
+            }
+
+            // Hier kun je de waarden van SelectedStatus en geselecteerde ID's gebruiken
+            string selectedStatus = SelectedStatus;
+
+            // Geselecteerde ID's ophalen uit het formulier
+            var selectedItems = Request.Form["selectedItems"];
+
+            // Doe iets met geselecteerde ID's en SelectedStatus (bijv. opslaan in de database)
+
+            foreach ( var item in selectedItems )
+            {
+
+            }
 
             // Keer terug naar de pagina of voer andere logica uit
             return RedirectToPage("/leaverequests/index");
         }
+
         public async Task<IActionResult> OnPostAsync(int? form1Submit)
         {
             var userId = HttpContext.Session.GetInt32("userId");

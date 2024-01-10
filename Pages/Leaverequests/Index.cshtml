@@ -151,8 +151,11 @@
         }
 
         <form asp-page-handler="BulkEdit" method="post" id="bulkEditForm">
-            <!-- ... andere formulierelementen ... -->
-            <input type="hidden" asp-for="Leaverequest[0].ID" />
+            @foreach (var item in Model.LeaverequestTeam)
+            {
+                <input type="hidden" name="selectedItems" value="@item.ID" />
+            }
+
             <button type="submit" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
             <select asp-for="SelectedStatus" class="form-control">
                 @foreach (var status in Model.Statuses)
@@ -161,6 +164,7 @@
                 }
             </select>
         </form>
+
 
 
     <table class="table">
