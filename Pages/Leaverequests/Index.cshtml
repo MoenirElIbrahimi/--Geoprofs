@@ -185,6 +185,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Employee)
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -202,6 +205,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.FirstName)
                 </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
