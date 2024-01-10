@@ -63,10 +63,10 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 return RedirectToPage("/leaverequests/index");
             } else if (CurrentUser.Role.Name != "Manager") {
-                return RedirectToPage("/leaverequests/index");
+                return RedirectToPage("/403");
             } else if (CurrentUser.ID == Leaverequest.Employee.ID)
             {
-                return RedirectToPage("/leaverequests/index");
+                return RedirectToPage("/403");
             } else if (CurrentUser.Team.ID != Leaverequest.Employee.Team.ID) {
                 return NotFound();
             }
