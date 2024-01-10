@@ -181,6 +181,20 @@ namespace ContosoUniversity.Pages.Leaverequests
                 return RedirectToPage("/403");
             }
 
+            DateTime today = DateTime.Today;
+
+            bool hasSickLeaveForToday = await _context.Leaverequest.AnyAsync(
+            l => l.Employee.ID == currentUser.ID
+                 && l.Category.Name == "Sick"
+                 && l.StartDate.Date == today);
+
+            if (hasSickLeaveForToday)
+            {
+                TempData["ErrorMessage"] = "Already submitted sick leave for today";
+
+                return RedirectToPage("/leaverequests/index");
+            }
+
             SickLeave = new Leaverequest();
 
             SickLeave.Employee = currentUser;
@@ -190,8 +204,6 @@ namespace ContosoUniversity.Pages.Leaverequests
 
             var sickCategory = await _context.Categorys.FirstOrDefaultAsync(s => s.Name == "Sick");
             SickLeave.Category = sickCategory;
-
-            DateTime today = DateTime.Today;
 
             SickLeave.StartDate = today;
 
