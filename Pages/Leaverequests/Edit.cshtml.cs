@@ -52,7 +52,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == null)
             {
-                return NotFound();
+                return RedirectToPage("/403");
             }
             CurrentUser = await _context.Employees
                 .Where(u => u.ID == userId)
