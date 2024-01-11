@@ -36,7 +36,7 @@ namespace ContosoUniversity.Pages.Leaverequests
                 return NotFound();
             }
 
-            var leaverequest = await _context.Leaverequest.FirstOrDefaultAsync(m => m.ID == id);
+            var leaverequest = await _context.Leaverequest.Include(l=>l.Status).Include(l => l.Category).FirstOrDefaultAsync(m => m.ID == id);
             if (leaverequest == null)
             {
                 return NotFound();
