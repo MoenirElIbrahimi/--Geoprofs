@@ -30,7 +30,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public Role UserRole { get; set; }
 
-        public async Task OnGetAsync(
+        public async Task<IActionResult> OnGetAsync(
      DateTime? selectedDate,
     string selectedStatus,
     string selectedCategory,
@@ -40,11 +40,9 @@ namespace ContosoUniversity.Pages.Leaverequests
         {
             Category = await _context.GetCategoriesAsync();
             var userId = HttpContext.Session.GetInt32("userId");
-            if (userId == default)
+            if (userId == default || userId == null)
             {
-                TempData["ErrorMessage"] = "User ID not found in the session.";
-                RedirectToPage("/"); // Redirect and return to avoid further execution
-                return;
+                return RedirectToPage("/403");
             }
 
             var currentUser = await _context.Employees
@@ -55,7 +53,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             // Controleer of de currentUser null is voordat je verder gaat
             if (currentUser == null)
             {
-                RedirectToPage("/403");
+                return RedirectToPage("/403");
             }
 
             UserRole = currentUser.Role;
@@ -161,6 +159,8 @@ namespace ContosoUniversity.Pages.Leaverequests
             ViewData["SelectedCategory"] = selectedCategory;
             ViewData["SelectedCategoryTeam"] = selectedCategoryTeam;
             Statuses = await _context.GetStatusesAsync();
+
+            return Page();
         }
 
         public Leaverequest SickLeave { get; set; }
