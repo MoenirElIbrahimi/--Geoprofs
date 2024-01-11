@@ -18,9 +18,10 @@ namespace ContosoUniversity.Pages.Leaverequests
         {
             _context = context;
         }
+        public Role UserRole { get; set; }
 
-      public Leaverequest Leaverequest { get; set; }
-
+        public Leaverequest Leaverequest { get; set; }
+        public Employee Employee { get; set; }
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             var userId = HttpContext.Session.GetInt32("userId");
@@ -35,8 +36,20 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 return NotFound();
             }
+            var currentUser = await _context.Employees
+                .Include(e => e.Role)
+                .Include(e => e.Team)
+                .FirstOrDefaultAsync(e => e.ID == userId);
 
+            // Controleer of de currentUser null is voordat je verder gaat
+            if (currentUser == null)
+            {
+                RedirectToPage("/403");
+            }
+
+            UserRole = currentUser.Role;
             var leaverequest = await _context.Leaverequest.Include(l=>l.Status).Include(l => l.Category).FirstOrDefaultAsync(m => m.ID == id);
+            var employee = await _context.Employee.Include(e=>e.Role).Include(e => e.Team).FirstOrDefaultAsync(m => m.ID == id);
             if (leaverequest == null)
             {
                 return NotFound();
