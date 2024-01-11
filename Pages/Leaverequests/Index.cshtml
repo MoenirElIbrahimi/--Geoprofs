@@ -1,6 +1,5 @@
 ﻿@page
-@model ContosoUniversity.Pages.Leaverequests.IndexModel
-ContosoUniversity.Pages.Categorys.IndexModel
+@model ContosoUniversity.Pages.Leaverequests.IndexModel 
 
 @{
     ViewData["Title"] = "Index";
@@ -12,33 +11,26 @@ ContosoUniversity.Pages.Categorys.IndexModel
         <h1>Index</h1>
         <div>
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
-                <button type="button" class="btn btn-primary"  OnClick="toggleNotificationContainer()">show notifactions</button>
-            <div id="notification-container" style="display: none;">
-                
-                
-                @foreach (var item in Model.LeaverequestNotifications)
-                {
+            @if (Model.UserRole.Name == "Manager")
+            {
+                <button type="button" class="btn btn-primary" OnClick="toggleNotificationContainer()">show notifactions</button>
+                <div id="notification-container" style="display: none;">
 
-                    //var relatedCategory = Model.Category.FirstOrDefault(c => (c.ID == item.Type.ID));  // Assuming Model.Categories holds your Category data
 
+                    @foreach (var item in Model.LeaverequestNotifications)
+                    {
                         <div class="notification">
                             <td>
                                 @Html.DisplayFor(modelItem => item.Reason)
                             </td>
-                            <td style="color: @item.Status.Color;">
-                                @Html.DisplayFor(modelItem => item.Status.Name)
-                            </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.StartDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.EndDate)
+                                @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                                @Html.DisplayFor(modelItem => item.Employee.LastName)
+
                             </td>
                         </div>
-                   
-
-                }
-            </div>
+                    }
+                </div>}
         </div>
         
     </div>

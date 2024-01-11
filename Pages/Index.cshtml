@@ -8,18 +8,18 @@
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger" role="alert">
-            @Html.ValidationSummary()
+           @Html.ValidationSummary()
         </div>
     }
     <form method="post">
         <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" name="Email" aria-describedby="emailHelp" placeholder="Enter email">
+            <input value="manager@geoprofs.com" type="email" class="form-control" id="exampleInputEmail1" name="Email" aria-describedby="emailHelp" placeholder="Enter email">
             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
         </div>
         <div class="form-group">
             <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" name="Password" placeholder="Password">
+            <input value="manager" type="password" class="form-control" id="exampleInputPassword1" name="Password" placeholder="Password">
         </div>
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
