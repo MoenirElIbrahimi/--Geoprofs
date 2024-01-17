@@ -24,6 +24,11 @@ namespace ContosoUniversity.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Course> Courses { get; set; }
 
+        public async Task<List<Category>> GetCategoriesAsync()
+        {
+            return await Categorys.ToListAsync();
+        }
+
         public async Task<List<Status>> GetStatusesAsync()
         {
             return await Statuses.ToListAsync();
@@ -33,13 +38,13 @@ namespace ContosoUniversity.Data
             modelBuilder.Entity<Course>().ToTable("Course");
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
             modelBuilder.Entity<Student>().ToTable("Student");
-            modelBuilder.Entity<Leaverequest>().ToTable("Leaverequest");
+            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<Team>().ToTable("Team");   
+            modelBuilder.Entity<Status>().ToTable("status");
+            modelBuilder.Entity<Category>().ToTable("Category");
             modelBuilder.Entity<Employee>().ToTable("Employee");
-            modelBuilder.Entity<Role>().ToTable("Roles");
-            modelBuilder.Entity<Team>().ToTable("Teams");   
-            modelBuilder.Entity<Status>().ToTable("statuses");
-            modelBuilder.Entity<Category>().ToTable("Categorys");
-            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Leaverequest>().ToTable("Leaverequest");
         }
 
         public DbSet<ContosoUniversity.Models.Leaverequest> Leaverequest { get; set; }

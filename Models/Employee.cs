@@ -1,4 +1,6 @@
-﻿namespace ContosoUniversity.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ContosoUniversity.Models
 {
     public class Employee
     {
@@ -10,6 +12,7 @@
 
         public Team Team { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
         public Role Role { get; set; }
 

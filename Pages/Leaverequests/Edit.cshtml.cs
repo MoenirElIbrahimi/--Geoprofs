@@ -52,7 +52,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == null)
             {
-                return NotFound();
+                return RedirectToPage("/403");
             }
             CurrentUser = await _context.Employees
                 .Where(u => u.ID == userId)
@@ -63,10 +63,10 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 return RedirectToPage("/leaverequests/index");
             } else if (CurrentUser.Role.Name != "Manager") {
-                return RedirectToPage("/leaverequests/index");
+                return RedirectToPage("/403");
             } else if (CurrentUser.ID == Leaverequest.Employee.ID)
             {
-                return RedirectToPage("/leaverequests/index");
+                return RedirectToPage("/403");
             } else if (CurrentUser.Team.ID != Leaverequest.Employee.Team.ID) {
                 return NotFound();
             }

@@ -77,7 +77,17 @@
             <option value="@status.Name">@status.Name</option>
         }
     </select>
+    <label for="selectedCategory">Filter by Category:</label>
+    <select name="selectedCategory" id="selectedCategory">
+        <option value="">All</option>
+        @if (Model.Category != null){
 
+        }
+        @foreach (var category in Model.Category)
+        {
+            <option value="@category.Name">@category.Name</option>
+        }
+    </select>
     <button type="submit">Filter</button>
 </form>
 
@@ -93,11 +103,19 @@
         @TempData["SuccessMessage"]
     </div>
 }
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Reason)
+                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Category)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Status)
@@ -112,89 +130,12 @@
         </tr>
     </thead>
     <tbody>
-      @foreach (var item in Model.Leaverequest) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td style="color: @item.Status.Color;">
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
-@if (Model.UserRole != default)
-{
-  @if (Model.UserRole.Name == "Manager")
-  {
-    <h2>Leave requests team</h2>
-    <!-- Form for team's leave requests (visible only for Managers) -->
-    @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
-    {
-        <form method="get">
-            <label for="selectedDateTeam">Filter Start Date (Team):</label>
-            <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
-
-            <label for="selectedStatusTeam">Filter by Status (Team):</label>
-            <select name="selectedStatusTeam" id="selectedStatusTeam">
-                <option value="">All</option>
-                @foreach (var status in Model.Statuses)
-                {
-                    <option value="@status.Name">@status.Name</option>
-                }
-            </select>
-
-            <button type="submit">Filter (Team)</button>
-        </form>
-    }         
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Reason)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-          @foreach (var item in Model.LeaverequestTeam) {
+        @foreach (var item in Model.Leaverequest)
+        {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Reason)
+                    @Html.DisplayFor(modeltem => item.Category.Name)
                 </td>
                 <td style="color: @item.Status.Color;">
                     @Html.DisplayFor(modelItem => item.Status.Name)
@@ -206,21 +147,118 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
+                </td>
+            </tr>
+        }
 
+    </tbody>
+</table>
+
+@if (Model.UserRole != default)
+{
+  @if (Model.UserRole.Name == "Manager")
+  {
+    <h2>Leave requests team</h2>
+    <!-- Form for team's leave requests (visible only for Managers) -->
+    @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
+    {
+        <form method="get">
+            <label for="selectedDateTeam">Filter Start Date :</label>
+            <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+
+            <label for="selectedStatusTeam">Filter by Status :</label>
+            <select name="selectedStatusTeam" id="selectedStatusTeam">
+                <option value="">All</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status.Name">@status.Name</option>
+                }
+            </select>
+
+            <label for="selectedCategoryTeam">Filter by Category (Team):</label>
+            <select name="selectedCategoryTeam" id="selectedCategoryTeam">
+                <option value="">All</option>
+                @if (Model.Category != null)
+                {
+                    foreach (var category in Model.Category)
+                    {
+                        <option value="@category.Name">@category.Name</option>
+                    }
+                }
+            </select>
+            <button type="submit">Filter (Team)</button>
+        </form>
+    }
+    
+    @if (Model.LeaverequestTeam != null && Model.LeaverequestTeam.Any())
+    {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Category)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Leaverequest[0].Employee)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          @foreach (var item in Model.LeaverequestTeam) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td style="color: @item.Status.Color;">
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                </td>
+                <td>
                     <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
                 </td>
             </tr>
           }
         </tbody>
     </table>
-        <script defer>
+  }
+}
+else
+{
+    <p>No leave requests found for the team.</p>
+}
+
+<script>
+    function CreateSickLeave() {
+        DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
+    }
+  
+</script>
+   <script defer>
             function toggleNotificationContainer() {
                 console.log('function test');
                 var notificationContainer = document.getElementById('notification-container');
                 notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
             }
         </script>
-  }
-}
+
+
