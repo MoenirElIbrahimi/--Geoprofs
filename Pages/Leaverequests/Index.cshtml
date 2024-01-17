@@ -1,15 +1,38 @@
 ﻿@page
-@model ContosoUniversity.Pages.Leaverequests.IndexModel
+@model ContosoUniversity.Pages.Leaverequests.IndexModel 
 
 @{
     ViewData["Title"] = "Index";
+    var currentDate = DateTime.Now;
 
 }    
-
 <div class="">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Index</h1>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
+        <div>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
+            @if (Model.UserRole.Name == "Manager")
+            {
+                <button type="button" class="btn btn-primary" OnClick="toggleNotificationContainer()">show notifactions</button>
+                <div id="notification-container" style="display: none;">
+
+
+                    @foreach (var item in Model.LeaverequestNotifications)
+                    {
+                        <div class="notification">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Reason)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                                @Html.DisplayFor(modelItem => item.Employee.LastName)
+
+                            </td>
+                        </div>
+                    }
+                </div>}
+        </div>
+        
     </div>
 </div>
 
@@ -217,7 +240,6 @@
           }
         </tbody>
     </table>
-   }
   }
 }
 else
@@ -229,6 +251,14 @@ else
     function CreateSickLeave() {
         DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
     }
+  
 </script>
+   <script defer>
+            function toggleNotificationContainer() {
+                console.log('function test');
+                var notificationContainer = document.getElementById('notification-container');
+                notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
+            }
+        </script>
 
 

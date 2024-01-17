@@ -16,3 +16,30 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+#notification-container {
+    position: fixed;
+    top: 130px;
+    right: 110px;
+    width: 250px;
+    height: 450px;
+    display: none;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+
+.notification {
+    padding: 15px;
+    height: 50px;
+    width: auto;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    background-color: #f8d7da;
+    color: #721c24;
+    margin-bottom: 10px;
+}
