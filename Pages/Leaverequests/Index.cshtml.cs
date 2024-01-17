@@ -24,6 +24,16 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public IList<Leaverequest> Leaverequest { get; set; } = default!;
 
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public bool HasPreviousPage => CurrentPage > 1;
+        public bool HasNextPage => CurrentPage < TotalPages;
+
+        public int CurrentTeamPage { get; set; }
+        public int TotalTeamPages { get; set; }
+        public bool HasPreviousTeamPage => CurrentTeamPage > 1;
+        public bool HasNextTeamPage => CurrentTeamPage < TotalTeamPages;
+
         public IList<Leaverequest> LeaverequestTeam { get; set; } = default!;
 
         public IList<Category> Category { get; set; } = default!;
@@ -31,13 +41,23 @@ namespace ContosoUniversity.Pages.Leaverequests
         public Role UserRole { get; set; }
 
         public async Task<IActionResult> OnGetAsync(
-     DateTime? selectedDate,
-    string selectedStatus,
-    string selectedCategory,
-    string selectedCategoryTeam,
-    DateTime? selectedDateTeam,
-    string selectedStatusTeam)
+         DateTime? selectedDate,
+        string selectedStatus,
+        string selectedCategory,
+        string selectedCategoryTeam,
+        DateTime? selectedDateTeam,
+        string selectedStatusTeam)
         {
+            int pageSize = 10;
+
+            var pageQueryParam = HttpContext.Request.Query["page"];
+            int? page = string.IsNullOrEmpty(pageQueryParam) ? null : int.Parse(pageQueryParam);
+            int currentPage = (page.HasValue && page > 0) ? page.Value : 1;
+
+            var teamPageQueryParam = HttpContext.Request.Query["teamPage"];
+            int? teamPage = string.IsNullOrEmpty(teamPageQueryParam) ? null : int.Parse(teamPageQueryParam);
+            int currentTeamPage = (teamPage.HasValue && teamPage > 0) ? teamPage.Value : 1;
+
             Category = await _context.GetCategoriesAsync();
             var userId = HttpContext.Session.GetInt32("userId");
             if (userId == default || userId == null)
@@ -61,8 +81,6 @@ namespace ContosoUniversity.Pages.Leaverequests
             // Defineer de variabele 'query'
             var query = _context.Leaverequest.Where(lr => lr.Employee.ID == userId);
 
-            // ... (andere logica die query gebruikt)
-
             Leaverequest = await query
                 .Include(lr => lr.Status)
                 .Include(lr => lr.Category)
@@ -85,6 +103,16 @@ namespace ContosoUniversity.Pages.Leaverequests
                 .Include(lr => lr.Status)
                 .Include(lr => lr.Category)
                 .ToListAsync();
+
+            CurrentPage = currentPage;
+            TotalPages = (int)Math.Ceiling(Leaverequest.Count / (double)pageSize);
+
+            Leaverequest = Leaverequest
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+
             if (UserRole.Name == "Manager")
             {
                 query = _context.Leaverequest
@@ -152,12 +180,23 @@ namespace ContosoUniversity.Pages.Leaverequests
                     LeaverequestTeam = new List<Leaverequest>();
                 }
             }
+
+            CurrentTeamPage = currentTeamPage;
+            TotalTeamPages = (int)Math.Ceiling(LeaverequestTeam.Count / (double)pageSize);
+
+            LeaverequestTeam = LeaverequestTeam
+            .Skip((currentTeamPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
             ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
             ViewData["SelectedStatus"] = selectedStatus;
             ViewData["SelectedDateTeam"] = selectedDateTeam?.ToString("yyyy-MM-dd");
             ViewData["SelectedStatusTeam"] = selectedStatusTeam;
             ViewData["SelectedCategory"] = selectedCategory;
             ViewData["SelectedCategoryTeam"] = selectedCategoryTeam;
+            ViewData["page"] = page;
+            ViewData["teamPage"] = teamPage;
             Statuses = await _context.GetStatusesAsync();
 
             return Page();
@@ -222,5 +261,4 @@ namespace ContosoUniversity.Pages.Leaverequests
             return RedirectToPage("/leaverequests/index");
         }
     }
-
 }
