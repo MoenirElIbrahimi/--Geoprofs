@@ -36,6 +36,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             {
                 return NotFound();
             }
+
             var currentUser = await _context.Employees
                 .Include(e => e.Role)
                 .Include(e => e.Team)
@@ -48,17 +49,34 @@ namespace ContosoUniversity.Pages.Leaverequests
             }
 
             UserRole = currentUser.Role;
-            var leaverequest = await _context.Leaverequest.Include(l=>l.Status).Include(l => l.Category).FirstOrDefaultAsync(m => m.ID == id);
-            var employee = await _context.Employee.Include(e=>e.Role).Include(e => e.Team).FirstOrDefaultAsync(m => m.ID == id);
+
+            var leaverequest = await _context.Leaverequest
+                .Include(l => l.Status)
+                .Include(l => l.Category)
+                .Include(l => l.Employee)
+                    .ThenInclude(e => e.Role)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (leaverequest == null)
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Leaverequest = leaverequest;
+                Employee = leaverequest.Employee; // Set the Employee property
+
+                // Assuming 'Team' is a property of 'Employee'
+                if (Employee != null && Employee.Team != null)
+                {
+                    // Now, you can access 'Team' through the 'Employee' property
+                    var team = Employee.Team;
+                }
             }
+
             return Page();
+
         }
+
     }
 }

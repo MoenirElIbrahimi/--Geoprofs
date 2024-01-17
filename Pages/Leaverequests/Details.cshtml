@@ -51,8 +51,7 @@
     </dl>
         @if (Model.UserRole.Name == "Manager")
     {
-        @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
-        {
+ 
 
             <h4>Employee</h4>
             <dl class ="row">
@@ -93,7 +92,7 @@
                     @Html.DisplayFor(model => model.Leaverequest.Employee.VacationDays)
                 </dd>
             </dl>
-        }
+        
 
     }
 
