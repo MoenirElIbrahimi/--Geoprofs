@@ -91,7 +91,7 @@ namespace ContosoUniversity.Data
             // Seed leave requests
             foreach (var employee in employees)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 15; i++)
                 {
                     var leaveRequest = new Leaverequest
                     {
