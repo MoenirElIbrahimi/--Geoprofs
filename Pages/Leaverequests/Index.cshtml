@@ -132,6 +132,42 @@
     </tbody>
 </table>
 
+<div class="pagination">
+    <form method="get" asp-page="./Leaverequests">
+        <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+        <input type="hidden" name="SelectedCategory" value="@ViewData["SelectedCategory"]" />
+        <input type="hidden" name="selectedStatus" value="@ViewData["SelectedStatus"]" />
+        <input type="hidden" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+        <input type="hidden" name="SelectedCategoryTeam" value="@ViewData["SelectedCategoryTeam"]" />
+        <input type="hidden" name="selectedStatusTeam" value="@ViewData["SelectedStatusTeam"]" />
+        <input type="hidden" name="teamPage" value="@ViewData["teamPage"]" />
+        <!-- Include other hidden fields for your filters -->
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <button type="submit" class="page-link" name="page" value="@(Model.CurrentPage - 1)">Previous</button>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <button type="submit" class="page-link" name="page" value="@i">@i</button>
+                </li>
+            }
+
+            @if (Model.HasNextPage)
+            {
+               <li class="page-item">
+                    <button type="submit" class="page-link" name="page" value="@(Model.CurrentPage + 1)">Next</button>
+                </li>
+            }
+        </ul>
+    </form>
+</div>
+
+
 @if (Model.UserRole != default)
 {
   @if (Model.UserRole.Name == "Manager")
@@ -217,6 +253,40 @@
           }
         </tbody>
     </table>
+
+            <div class="pagination">
+                <form method="get" asp-page="./Leaverequests">
+                    <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+                    <input type="hidden" name="SelectedCategory" value="@ViewData["SelectedCategory"]" />
+                    <input type="hidden" name="selectedStatus" value="@ViewData["SelectedStatus"]" />
+                    <input type="hidden" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+                    <input type="hidden" name="SelectedCategoryTeam" value="@ViewData["SelectedCategoryTeam"]" />
+                    <input type="hidden" name="selectedStatusTeam" value="@ViewData["SelectedStatusTeam"]" />
+                    <input type="hidden" name="page" value="@ViewData["page"]" />
+                    <ul class="pagination">
+                        @if (Model.HasPreviousTeamPage)
+                        {
+                            <li class="page-item">
+                                <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage - 1)">Previous</button>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= Model.TotalTeamPages; i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentTeamPage ? "active" : "")">
+                                <button type="submit" class="page-link" name="teamPage" value="@i">@i</button>
+                            </li>
+                        }
+
+                        @if (Model.HasNextTeamPage)
+                        {
+                            <li class="page-item">
+                                <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage + 1)">Next</button>
+                            </li>
+                        }
+                    </ul>
+                </form>
+            </div>
    }
   }
 }
