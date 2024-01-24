@@ -251,14 +251,11 @@ else
     function CreateSickLeave() {
         DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
     }
-  
+    function toggleNotificationContainer() {
+        console.log('function test');
+        var notificationContainer = document.getElementById('notification-container');
+        notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
+    }
 </script>
-   <script defer>
-            function toggleNotificationContainer() {
-                console.log('function test');
-                var notificationContainer = document.getElementById('notification-container');
-                notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
-            }
-        </script>
 
 

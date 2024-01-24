@@ -100,11 +100,11 @@ namespace ContosoUniversity.Pages.Leaverequests
             var tenAM = DateTime.Today.AddHours(10);
             LeaverequestNotifications = await _context.Leaverequest
              .Include(lr => lr.Status)
-                 .Include(lr => lr.Type)
+                 .Include(lr => lr.Category)
                  .Include(lr => lr.Employee)
                  .Where(lr => lr.StartDate.Date == DateTime.Now.Date)
                  //.Where(lr => lr.StartDate.TimeOfDay < tenAM.TimeOfDay)
-                 .Where(lr => lr.Type.ID == 3)
+                 .Where(lr => lr.Category.ID == 3)
                  .ToListAsync();
 
             // Filters for the team's leave requests
