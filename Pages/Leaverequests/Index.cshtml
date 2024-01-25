@@ -228,88 +228,112 @@
     
     @if (Model.LeaverequestTeam != null && Model.LeaverequestTeam.Any())
     {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Category)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Leaverequest[0].Employee)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-          @foreach (var item in Model.LeaverequestTeam) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.Name)
-                </td>
-                <td style="color: @item.Status.Color;">
-                    @Html.DisplayFor(modelItem => item.Status.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Employee.FirstName)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
-                </td>
-            </tr>
-          }
-        </tbody>
-    </table>
+        <form asp-page-handler="BulkEdit" method="post" id="bulkEditForm">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-2 p-0">
+                            <div class="input-group mb-3 mt-3">
+                                <select asp-for="SelectedStatus" class="form-control" name="SelectedStatus">
+                                    @foreach (var status in Model.Statuses)
+                                    {
+                                        <option value="@status.ID">@status.Name</option>
+                                    }
+                                </select>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="selectAll" />
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].Category)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].Employee)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in Model.LeaverequestTeam) {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedIDS" value="@item.ID" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Name)
+                        </td>
+                        <td style="color: @item.Status.Color;">
+                            @Html.DisplayFor(modelItem => item.Status.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                        </td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
+                        </td>
+                    </tr>
+                  }
+                </tbody>
+            </table>
+        </form>
+        <div class="pagination">
+            <form method="get" asp-page="./Leaverequests">
+                <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+                <input type="hidden" name="SelectedCategory" value="@ViewData["SelectedCategory"]" />
+                <input type="hidden" name="selectedStatus" value="@ViewData["SelectedStatus"]" />
+                <input type="hidden" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+                <input type="hidden" name="SelectedCategoryTeam" value="@ViewData["SelectedCategoryTeam"]" />
+                <input type="hidden" name="selectedStatusTeam" value="@ViewData["SelectedStatusTeam"]" />
+                <input type="hidden" name="page" value="@ViewData["page"]" />
+                <ul class="pagination">
+                    @if (Model.HasPreviousTeamPage)
+                    {
+                        <li class="page-item">
+                            <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage - 1)">Previous</button>
+                        </li>
+                    }
 
-            <div class="pagination">
-                <form method="get" asp-page="./Leaverequests">
-                    <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
-                    <input type="hidden" name="SelectedCategory" value="@ViewData["SelectedCategory"]" />
-                    <input type="hidden" name="selectedStatus" value="@ViewData["SelectedStatus"]" />
-                    <input type="hidden" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
-                    <input type="hidden" name="SelectedCategoryTeam" value="@ViewData["SelectedCategoryTeam"]" />
-                    <input type="hidden" name="selectedStatusTeam" value="@ViewData["SelectedStatusTeam"]" />
-                    <input type="hidden" name="page" value="@ViewData["page"]" />
-                    <ul class="pagination">
-                        @if (Model.HasPreviousTeamPage)
-                        {
-                            <li class="page-item">
-                                <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage - 1)">Previous</button>
-                            </li>
-                        }
+                    @for (int i = 1; i <= Model.TotalTeamPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentTeamPage ? "active" : "")">
+                            <button type="submit" class="page-link" name="teamPage" value="@i">@i</button>
+                        </li>
+                    }
 
-                        @for (int i = 1; i <= Model.TotalTeamPages; i++)
-                        {
-                            <li class="page-item @(i == Model.CurrentTeamPage ? "active" : "")">
-                                <button type="submit" class="page-link" name="teamPage" value="@i">@i</button>
-                            </li>
-                        }
-
-                        @if (Model.HasNextTeamPage)
-                        {
-                            <li class="page-item">
-                                <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage + 1)">Next</button>
-                            </li>
-                        }
-                    </ul>
-                </form>
-            </div>
-   }
+                    @if (Model.HasNextTeamPage)
+                    {
+                        <li class="page-item">
+                            <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage + 1)">Next</button>
+                        </li>
+                    }
+                </ul>
+            </form>
+        </div>
+    }
   }
 }
 else
@@ -325,6 +349,14 @@ else
         var notificationContainer = document.getElementById('notification-container');
         notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
     }
+
+    document.getElementById('selectAll').addEventListener('change', function () {
+        var checkboxes = document.getElementsByName('selectedIDS');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = document.getElementById('selectAll').checked;
+        });
+    });
+
 </script>
 
 
