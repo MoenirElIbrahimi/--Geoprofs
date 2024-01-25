@@ -9,7 +9,28 @@
 <div class="">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Index</h1>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
+        <div class="buttonStack">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
+			@if (Model.UserRole.Name == "Manager")
+			{
+				<button type="button" class="btn btn-primary" OnClick="toggleNotificationContainer()">show notifactions</button>
+				<div id="notification-container" style="display: none;">
+
+
+					@foreach (var item in Model.LeaverequestNotifications)
+					{
+						<div class="notification">
+							<td>
+								@Html.DisplayFor(modelItem => item.Employee.FirstName)
+								@Html.DisplayFor(modelItem => item.Employee.LastName)
+                                reported sick.
+							</td>
+						</div>
+					}
+				</div>
+			}
+        </div>
+        
     </div>
 </div>
 
@@ -31,6 +52,7 @@
                 <form method="post">
                     <button type="submit" class="btn btn-primary" id="confirmAction" onclick="CreateSickLeave()">Confirm</button>
                 </form>
+               
             </div>
         </div>
     </div>
@@ -298,6 +320,10 @@ else
 <script>
     function CreateSickLeave() {
         DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
+    } function toggleNotificationContainer() {
+        console.log('function test');
+        var notificationContainer = document.getElementById('notification-container');
+        notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
     }
 </script>
 

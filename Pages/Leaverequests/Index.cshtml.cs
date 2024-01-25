@@ -38,6 +38,7 @@ namespace ContosoUniversity.Pages.Leaverequests
 
         public IList<Category> Category { get; set; } = default!;
 
+        public IList<Leaverequest> LeaverequestNotifications { get; set; } = default!;
         public Role UserRole { get; set; }
 
         public async Task<IActionResult> OnGetAsync(
@@ -112,6 +113,16 @@ namespace ContosoUniversity.Pages.Leaverequests
             .Take(pageSize)
             .ToList();
 
+            // notifactions
+            var tenAM = DateTime.Today.AddHours(10);
+            LeaverequestNotifications = await _context.Leaverequest
+             .Include(lr => lr.Status)
+                 .Include(lr => lr.Category)
+                 .Include(lr => lr.Employee)
+                 .Where(lr => lr.StartDate.Date == DateTime.Now.Date)
+                 //.Where(lr => lr.StartDate.TimeOfDay < tenAM.TimeOfDay)
+                 .Where(lr => lr.Category.ID == 3)
+                 .ToListAsync();
 
             if (UserRole.Name == "Manager")
             {
