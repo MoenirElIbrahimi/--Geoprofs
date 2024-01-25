@@ -15,6 +15,12 @@ namespace ContosoUniversity.Pages.Leaverequests
     {
         private readonly ContosoUniversity.Data.SchoolContext _context;
 
+        [BindProperty]
+        public List<int> selectedIDS { get; set; } = new List<int>();
+
+        [BindProperty]
+        public int SelectedStatus { get; set; }
+
         public IList<Status> Statuses { get; set; } = new List<Status>();
 
         public IndexModel(ContosoUniversity.Data.SchoolContext context)
@@ -257,6 +263,32 @@ namespace ContosoUniversity.Pages.Leaverequests
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Sick leave submitted";
+
+            return RedirectToPage("/leaverequests/index");
+        }
+
+        public async Task<IActionResult> OnPostBulkEdit()
+        {
+            if (selectedIDS != null && selectedIDS.Count > 0)
+            {
+                foreach (var selectedID in selectedIDS)
+                {
+                    Leaverequest selectedLeaverequest = await _context.Leaverequests.Include(lr => lr.Status).FirstOrDefaultAsync(lr => lr.ID == selectedID);
+                    if (selectedLeaverequest != null)
+                    {
+                        selectedLeaverequest.Status = await _context.Statuses.FirstOrDefaultAsync(s => s.ID == SelectedStatus);
+
+                        // Mark the entity as modified (Entity Framework Core tracks changes)
+                        _context.Leaverequests.Update(selectedLeaverequest);
+
+                        // Save changes to your data source (e.g., database)
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            // Redirect to the same page or another page as needed
+            TempData["SuccessMessage"] = "Updated statusses";
 
             return RedirectToPage("/leaverequests/index");
         }
