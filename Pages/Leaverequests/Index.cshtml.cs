@@ -288,7 +288,7 @@ namespace ContosoUniversity.Pages.Leaverequests
             }
 
             // Redirect to the same page or another page as needed
-            TempData["SuccessMessage"] = "Updated statusses";
+            TempData["SuccessMessage"] = "Updated statuses";
 
             return RedirectToPage("/leaverequests/index");
         }
