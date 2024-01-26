@@ -1,0 +1,70 @@
+﻿@page
+@model ContosoUniversity.Pages.leavebalanceModel
+@using ContosoUniversity.Models;
+
+
+@{
+    ViewData["Title"] = "leavebalance";
+}
+
+@functions {
+    @functions {
+        // This function calculates the total days spent on leave for the employee
+        public int CalculateUsedLeaveDays(List<Leaverequest> leaverequests)
+        {
+            int totalDays = 0;
+            if (leaverequests != null)
+            {
+                foreach (var leaverequest in leaverequests)
+                {
+                    if (leaverequest != null && leaverequest.Status != null && leaverequest.StartDate != null && leaverequest.EndDate != null)
+                    {
+                        TimeSpan timeSpan = leaverequest.EndDate - leaverequest.StartDate;
+                        int leaveDays = (int)timeSpan.TotalDays;
+
+                        totalDays += leaveDays;
+                    }
+                }
+            }
+            return totalDays;
+        }
+    }
+
+}
+
+<h1>leavebalance</h1>
+
+<div class="row">
+    <div class="col-sm-3 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Verlofsaldo totaal</h5>
+                <p class="card-text">@Html.DisplayFor(model => model.Employee.VacationDays)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Besteed verlof</h5>
+                @{
+                    // Calculate the used leave hours for the employee
+                    int usedLeaveHours = CalculateUsedLeaveDays(Model.Leaverequests);
+                }
+                <p class="card-text">@usedLeaveHours</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Verlofsaldi</h5>
+                @{
+                    // Calculate the available leave hours for the employee
+                    int availableLeaveHours = Model.Employee.VacationDays - usedLeaveHours;
+                }
+                <p class="card-text">@availableLeaveHours</p>
+            </div>
+        </div>
+    </div>
+</div>

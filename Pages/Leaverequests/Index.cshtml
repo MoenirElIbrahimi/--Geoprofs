@@ -1,0 +1,362 @@
+﻿@page
+@model ContosoUniversity.Pages.Leaverequests.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+
+}    
+
+<div class="">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Index</h1>
+        <div class="buttonStack">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">Report Sick Leave</button>
+			@if (Model.UserRole.Name == "Manager")
+			{
+				<button type="button" class="btn btn-primary" OnClick="toggleNotificationContainer()">show notifactions</button>
+				<div id="notification-container" style="display: none;">
+
+
+					@foreach (var item in Model.LeaverequestNotifications)
+					{
+						<div class="notification">
+							<td>
+								@Html.DisplayFor(modelItem => item.Employee.FirstName)
+								@Html.DisplayFor(modelItem => item.Employee.LastName)
+                                reported sick.
+							</td>
+						</div>
+					}
+				</div>
+			}
+        </div>
+        
+    </div>
+</div>
+
+<!-- Bootstrap Modal for confirmation -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to call in sick?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form method="post">
+                    <button type="submit" class="btn btn-primary" id="confirmAction" onclick="CreateSickLeave()">Confirm</button>
+                </form>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2>Your leave requests</h2>
+
+@{
+    var selectedDate = ViewData["SelectedDate"] as string;
+}
+
+<form method="get">
+    <label for="selectedDate">Filter Start Date:</label>
+    <input type="date" id="selectedDate" name="selectedDate" value="@ViewData["SelectedDate"]" />
+
+    <label for="selectedStatus">Filter by Status:</label>
+    <select name="selectedStatus" id="selectedStatus">
+        <option value="">All</option>
+        @foreach (var status in Model.Statuses)
+        {
+            <option value="@status.Name">@status.Name</option>
+        }
+    </select>
+    <label for="selectedCategory">Filter by Category:</label>
+    <select name="selectedCategory" id="selectedCategory">
+        <option value="">All</option>
+        @if (Model.Category != null){
+
+        }
+        @foreach (var category in Model.Category)
+        {
+            <option value="@category.Name">@category.Name</option>
+        }
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+@if (TempData.ContainsKey("SuccessMessage"))
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeaverequestTeam[0].EndDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.Leaverequest)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modeltem => item.Category.Name)
+                </td>
+                <td style="color: @item.Status.Color;">
+                    @Html.DisplayFor(modelItem => item.Status.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="pagination">
+    <form method="get" asp-page="./Leaverequests">
+        <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+        <input type="hidden" name="SelectedCategory" value="@ViewData["SelectedCategory"]" />
+        <input type="hidden" name="selectedStatus" value="@ViewData["SelectedStatus"]" />
+        <input type="hidden" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+        <input type="hidden" name="SelectedCategoryTeam" value="@ViewData["SelectedCategoryTeam"]" />
+        <input type="hidden" name="selectedStatusTeam" value="@ViewData["SelectedStatusTeam"]" />
+        <input type="hidden" name="teamPage" value="@ViewData["teamPage"]" />
+        <!-- Include other hidden fields for your filters -->
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <button type="submit" class="page-link" name="page" value="@(Model.CurrentPage - 1)">Previous</button>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <button type="submit" class="page-link" name="page" value="@i">@i</button>
+                </li>
+            }
+
+            @if (Model.HasNextPage)
+            {
+               <li class="page-item">
+                    <button type="submit" class="page-link" name="page" value="@(Model.CurrentPage + 1)">Next</button>
+                </li>
+            }
+        </ul>
+    </form>
+</div>
+
+
+@if (Model.UserRole != default)
+{
+  @if (Model.UserRole.Name == "Manager")
+  {
+    <h2>Leave requests team</h2>
+    <!-- Form for team's leave requests (visible only for Managers) -->
+    @if (Model.UserRole != default && Model.UserRole.Name == "Manager")
+    {
+        <form method="get">
+            <label for="selectedDateTeam">Filter Start Date :</label>
+            <input type="date" id="selectedDateTeam" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+
+            <label for="selectedStatusTeam">Filter by Status :</label>
+            <select name="selectedStatusTeam" id="selectedStatusTeam">
+                <option value="">All</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status.Name">@status.Name</option>
+                }
+            </select>
+
+            <label for="selectedCategoryTeam">Filter by Category (Team):</label>
+            <select name="selectedCategoryTeam" id="selectedCategoryTeam">
+                <option value="">All</option>
+                @if (Model.Category != null)
+                {
+                    foreach (var category in Model.Category)
+                    {
+                        <option value="@category.Name">@category.Name</option>
+                    }
+                }
+            </select>
+            <button type="submit">Filter (Team)</button>
+        </form>
+    }
+    
+    @if (Model.LeaverequestTeam != null && Model.LeaverequestTeam.Any())
+    {
+        <form asp-page-handler="BulkEdit" method="post" id="bulkEditForm">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-2 p-0">
+                            <div class="input-group mb-3 mt-3">
+                                <select asp-for="SelectedStatus" class="form-control" name="SelectedStatus">
+                                    @foreach (var status in Model.Statuses)
+                                    {
+                                        <option value="@status.ID">@status.Name</option>
+                                    }
+                                </select>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary" id="bulkEditButton">Bulk Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="selectAll" />
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].Category)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].Status)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].StartDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].EndDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Leaverequest[0].Employee)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in Model.LeaverequestTeam) {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedIDS" value="@item.ID" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Name)
+                        </td>
+                        <td style="color: @item.Status.Color;">
+                            @Html.DisplayFor(modelItem => item.Status.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Employee.FirstName)
+                        </td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-page="./Details" asp-route-id="@item.ID">Details</a>
+                        </td>
+                    </tr>
+                  }
+                </tbody>
+            </table>
+        </form>
+        <div class="pagination">
+            <form method="get" asp-page="./Leaverequests">
+                <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+                <input type="hidden" name="SelectedCategory" value="@ViewData["SelectedCategory"]" />
+                <input type="hidden" name="selectedStatus" value="@ViewData["SelectedStatus"]" />
+                <input type="hidden" name="selectedDateTeam" value="@ViewData["SelectedDateTeam"]" />
+                <input type="hidden" name="SelectedCategoryTeam" value="@ViewData["SelectedCategoryTeam"]" />
+                <input type="hidden" name="selectedStatusTeam" value="@ViewData["SelectedStatusTeam"]" />
+                <input type="hidden" name="page" value="@ViewData["page"]" />
+                <ul class="pagination">
+                    @if (Model.HasPreviousTeamPage)
+                    {
+                        <li class="page-item">
+                            <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage - 1)">Previous</button>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalTeamPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentTeamPage ? "active" : "")">
+                            <button type="submit" class="page-link" name="teamPage" value="@i">@i</button>
+                        </li>
+                    }
+
+                    @if (Model.HasNextTeamPage)
+                    {
+                        <li class="page-item">
+                            <button type="submit" class="page-link" name="teamPage" value="@(Model.CurrentTeamPage + 1)">Next</button>
+                        </li>
+                    }
+                </ul>
+            </form>
+        </div>
+    }
+  }
+}
+else
+{
+    <p>No leave requests found for the team.</p>
+}
+
+<script>
+    function CreateSickLeave() {
+        DotNet.invokeMethodAsync('YourProjectName', 'YourFunctionName');
+    } function toggleNotificationContainer() {
+        console.log('function test');
+        var notificationContainer = document.getElementById('notification-container');
+        notificationContainer.style.display = (notificationContainer.style.display === 'none' || notificationContainer.style.display === '') ? 'block' : 'none';
+    }
+
+    document.getElementById('selectAll').addEventListener('change', function () {
+        var checkboxes = document.getElementsByName('selectedIDS');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = document.getElementById('selectAll').checked;
+        });
+    });
+
+</script>
+
+

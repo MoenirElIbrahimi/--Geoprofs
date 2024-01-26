@@ -1,0 +1,69 @@
+﻿@page
+@model ContosoUniversity.Pages.Leaverequests.CreateModel
+@using ContosoUniversity.Models
+
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Leaverequest</h4>
+<hr />
+<div>
+    <div>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.Reason" class="control-label">Reason</label>
+                <textarea asp-for="Leaverequest.Reason" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Leaverequest.Reason" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Leaverequest.Category" class="control-label">Category</label>
+                @if (Model.Categorys != null && Model.Categorys.Any())
+                {
+                    <select name="LeaverequestCategory" asp-items="@(new SelectList(Model.Categorys, "ID", "Name"))" class="form-control"></select>
+                }
+                else
+                {
+                    <p>No Categorys available.</p>
+                }
+                <span asp-validation-for="Leaverequest.Category" class="text-danger"></span>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Leaverequest.StartDate" class="control-label">Start of leave</label>
+                    <input type="date" asp-for="Leaverequest.StartDate" class="form-control" />
+                    <span asp-validation-for="Leaverequest.StartDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Leaverequest.EndDate" class="control-label">End of leave</label>
+                    <input type="date" asp-for="Leaverequest.EndDate" class="form-control" />
+                    <span asp-validation-for="Leaverequest.EndDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@if (TempData["SelectedCategory"] != null)
+{
+    <script>
+        document.querySelector('select[name="LeaverequestCategory"]').value = '@TempData["SelectedCategory"]';
+    </script>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
